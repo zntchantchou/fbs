@@ -1,0 +1,16 @@
+services:
+  db:
+      image: postgres:12.19-alpine3.20
+      container_name: inventor_db
+      restart: always
+      # set shared memory limit when using docker-compose
+      build: 
+        context: .
+        shm_size: 128mb
+      environment:
+        POSTGRES_USER: user
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: inventor
+        PG_DATA: ./data
+      ports:
+        - 5000:5432
