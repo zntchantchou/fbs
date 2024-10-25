@@ -22,7 +22,7 @@ export interface PurchaseSummary {
 }
 export interface ExpenseSummary {
   purchaseSummaryId: string;
-  totalPurchased: number;
+  totalExpenses: number;
   changePercentage: number;
   date: string;
 }
@@ -40,13 +40,13 @@ export interface DashboardMetrics {
   salesSummary: SalesSummary[];
   purchaseSummary: PurchaseSummary[];
   expenseSummary: ExpenseSummary[];
-  expenseByCategorySummary: ExpenseByCategorySummary[];
+  expenseByCategory: ExpenseByCategorySummary[];
 }
 
 export interface ExpenseByCategorySummary {
   expenseByCategoryId: string;
   category: string;
-  amount: number;
+  amount: string;
   date: string;
 }
 

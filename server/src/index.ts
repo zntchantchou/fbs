@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 import dashboardRoutes from "./routes/dashboard.routes";
+import productRoutes from "./routes/product.routes";
 
 // ROUTE IMPORTS
 // CONFIG
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use("/dashboard", dashboardRoutes);
+app.use("/products", productRoutes);
 
 app.get("/hello", (req, res) => {
   console.log("REQUEST : \n", req);

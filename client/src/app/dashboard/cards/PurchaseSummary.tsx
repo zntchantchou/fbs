@@ -1,6 +1,7 @@
 import { useGetDashboardMetricsQuery } from "@/state/api";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import numeral from "numeral";
+
 import {
   Area,
   AreaChart,
@@ -14,6 +15,7 @@ function PurchaseSummary() {
   const { data, isLoading } = useGetDashboardMetricsQuery();
   const purchaseData = data?.purchaseSummary || [];
   const lastDataPoint = purchaseData[purchaseData.length - 1] || null;
+
   const header = (
     <div key="header">
       <h2 className="text-lg font-semibold mb-2 px-7 pt-5">Purchase Summary</h2>
@@ -47,7 +49,7 @@ function PurchaseSummary() {
           </p>
         )}
       </div>
-      <ResponsiveContainer width="100%" height={200} className="px-7 h-4">
+      <ResponsiveContainer width="100%" height={200} className="p-2">
         <AreaChart
           data={purchaseData}
           margin={{ top: 0, right: 0, left: -50, bottom: 45 }}
