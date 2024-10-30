@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "inventor",
-      scripts: "npm",
+      script: "npm",
       args: "run dev",
       env: {
         NODE_ENV: "development",
