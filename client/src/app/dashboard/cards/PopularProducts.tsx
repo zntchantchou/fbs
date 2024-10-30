@@ -1,6 +1,8 @@
 import Rating from "@/app/(components)/Rating";
 import { useGetDashboardMetricsQuery } from "@/state/api";
 import { ShoppingBag } from "lucide-react";
+import Image from "next/image";
+import ProductIcon from "@/assets/product.png";
 
 function PopularProducts() {
   const { data: dashboardMetrics, isLoading } = useGetDashboardMetricsQuery();
@@ -11,7 +13,7 @@ function PopularProducts() {
         className="flex items-center justify-between gap-3 px-5 py-7 border-b"
       >
         <div className="flex items-center gap-3">
-          <div>img</div>
+          <Image src={ProductIcon} alt="product icon" height={44} />
           <div className="flex flex-col justify-between gap-1">
             <div className="font-bold text-gray-700">{product.name}</div>
             <div className="flex text-sm items-center">

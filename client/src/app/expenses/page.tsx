@@ -96,7 +96,7 @@ function Expenses() {
 
       {/* FILTERS */}
       <div className="flex flex-col md:flex-row justify-between gap-4">
-        <div className="w-full md:z-1/3 bg-white shadow rounded-lg p-6">
+        <div className="w-full md:w-1/3 bg-white shadow rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">
             Filter by category and date
           </h3>

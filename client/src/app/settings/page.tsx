@@ -71,16 +71,14 @@ function Settings() {
           </thead>
           <tbody>
             {userSettings.map((setting, index) => (
-              <>
-                <tr className="hover:bg-blue-50" key={setting.label}>
-                  <td className="py-2 px-4">{setting.label}</td>
-                  <td className="py-2 px-4">
-                    {setting.type === "toggle"
-                      ? toggleElt(setting.value as boolean, index)
-                      : inputElt(setting, index)}
-                  </td>
-                </tr>
-              </>
+              <tr className="hover:bg-blue-50" key={setting.label}>
+                <td className="py-2 px-4">{setting.label}</td>
+                <td className="py-2 px-4">
+                  {setting.type === "toggle"
+                    ? toggleElt(setting.value as boolean, index)
+                    : inputElt(setting, index)}
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>

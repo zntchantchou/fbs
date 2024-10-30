@@ -23,7 +23,6 @@ function ExpenseSummary() {
   const expenseSums = expenseByCategorySummary.reduce(
     (prev: ExpensesTotal, curr: ExpenseByCategorySummary) => {
       const category = curr.category + " Expenses";
-      console.log("category ", category);
       const amount = parseInt(curr.amount, 10);
       if (!prev[category]) {
         prev[category] = 0;

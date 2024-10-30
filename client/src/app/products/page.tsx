@@ -10,6 +10,8 @@ import { useState } from "react";
 import Header from "@/app/(components)/Header";
 import Rating from "../(components)/Rating";
 import CreateProductModal from "./CreateProductModal";
+import ProductIcon from "@/assets/product.png";
+import Image from "next/image";
 
 function Products() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,7 +34,7 @@ function Products() {
         className="border shadow rounded-md p-4 max-w-full w-full mx-auto"
       >
         <div className="flex flex-col items-center">
-          img
+          <Image height={100} src={ProductIcon} alt="a product" />
           <h3 className="text-lg text-gray-900 font-semibold">
             {product.name}
           </h3>
