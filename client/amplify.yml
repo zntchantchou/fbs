@@ -1,5 +1,0 @@
-build:
-  commands:
-    - 'echo "Checking environment variables"'
-    - 'echo "NEXT_PUBLIC_API_BASE_URL = $NEXT_PUBLIC_API_BASE_URL"'
-    - "npm run build"
