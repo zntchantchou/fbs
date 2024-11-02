@@ -62,6 +62,7 @@ function Products() {
       "FAILED TO FETCH products",
       process.env.NEXT_PUBLIC_API_BASE_URL
     );
+    console.log("FULL ENV = ", process.env);
     return (
       <div className="text-center py-4 text-red-500">
         Failed to fetch products...
