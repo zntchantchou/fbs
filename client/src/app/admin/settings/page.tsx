@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Header from "@/app/(components)/Header";
+import { setIsDarkMode } from "@/state";
+import { useAppDispatch } from "@/app/redux";
 
 type userSetting = {
   label: string;
@@ -18,9 +20,14 @@ const mockSettings: userSetting[] = [
 ];
 function Settings() {
   const [userSettings, setUserSettings] = useState<userSetting[]>(mockSettings);
+  const dispatch = useAppDispatch();
   const handleToggleChange = (index: number) => {
     const settingsCopy = [...userSettings];
-    settingsCopy[index].value = !settingsCopy[index].value;
+    const updatedItem = settingsCopy[index];
+    updatedItem.value = !settingsCopy[index].value;
+    if (updatedItem.label === "Dark mode") {
+      dispatch(setIsDarkMode(updatedItem.value as boolean));
+    }
     setUserSettings(settingsCopy);
   };
   const toggleElt = (value: boolean, index: number) => (
