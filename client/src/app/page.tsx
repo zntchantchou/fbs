@@ -1,9 +1,5 @@
-
-import Dashboard from "@/app/dashboard/page";
+import Shop from "@/app/shop/page";
 
 export default function Home() {
-  return <Dashboard/>;
+  return <Shop />;
 }
-
-
-

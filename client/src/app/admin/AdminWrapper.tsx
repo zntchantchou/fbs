@@ -2,10 +2,10 @@
 
 import Navbar from "@/app/(components)/Navbar";
 import Sidebar from "@/app/(components)/Sidebar";
-import StoreProvider, { useAppSelector } from "../redux";
+import { useAppSelector } from "../redux";
 import { useEffect } from "react";
 
-function DashboardLayout({ children }: { children: React.ReactNode }) {
+function AdminLayout({ children }: { children: React.ReactNode }) {
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed
   );
@@ -36,12 +36,8 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function DashboardWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <StoreProvider>
-      <DashboardLayout>{children}</DashboardLayout>
-    </StoreProvider>
-  );
+function AdminWrapper({ children }: { children: React.ReactNode }) {
+  return <AdminLayout>{children}</AdminLayout>;
 }
 
-export default DashboardWrapper;
+export default AdminWrapper;

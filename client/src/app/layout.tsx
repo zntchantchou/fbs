@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import DashboardWrapper from "@/app/dashboard/DashboardWrapper";
+import StoreWrapper from "@/app/StoreWrapper";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <DashboardWrapper>{children}</DashboardWrapper>
+        <StoreWrapper>{children}</StoreWrapper>
       </body>
     </html>
   );

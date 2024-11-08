@@ -8,7 +8,7 @@ import {
 import { PlusCircleIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import Header from "@/app/(components)/Header";
-import Rating from "../(components)/Rating";
+import Rating from "@/app/(components)/Rating";
 import CreateProductModal from "./CreateProductModal";
 import ProductIcon from "@/assets/product.png";
 import Image from "next/image";

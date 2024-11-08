@@ -1,8 +1,8 @@
 "use client";
-import PopularProducts from "@/app/dashboard/cards/PopularProducts";
-import PurchaseSummary from "@/app/dashboard/cards/PurchaseSummary";
-import SalesSummary from "@/app/dashboard/cards/SalesSummary";
-import ExpenseSummary from "@/app/dashboard/cards/ExpenseSummary";
+import PopularProducts from "@/app/admin/cards/PopularProducts";
+import PurchaseSummary from "@/app/admin/cards/PurchaseSummary";
+import SalesSummary from "@/app/admin/cards/SalesSummary";
+import ExpenseSummary from "@/app/admin/cards/ExpenseSummary";
 import StatCard from "./cards/Stats";
 import {
   CheckCircle,
@@ -11,8 +11,9 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
+// import AdminWrapper from "./AdminWrapper";
 
-export default function Dashboard() {
+export default function AdminPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:overflow-auto gap-10 pb-4 custom-grid-rows">
       <PopularProducts />
