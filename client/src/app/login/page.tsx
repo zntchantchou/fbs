@@ -5,9 +5,42 @@ import Image from "next/image";
 import BassIcon from "@/assets/bass.svg";
 import GoogleIcon from "@/assets/google.png";
 import { useRouter } from "next/navigation";
+import { auth } from "firebaseui";
+import { AuthenticationService } from "@/auth/auth-service";
 
 function Login() {
+  console.log("AUTH: ", auth);
+  console.log("FirebaseAuth: ", AuthenticationService.firebaseAuth);
+
   const router = useRouter();
+  const handleGoogleLogin = async () => {
+    try {
+      const credentials = await AuthenticationService.loginWithGoogle();
+      if (credentials) {
+        router.push("/shop");
+      } else {
+        router.push("/login");
+      }
+    } catch (e) {
+      console.log("error opening google popup :", e);
+    }
+    console.log("[handleGoogleLogin]");
+  };
+
+  const handleGithubLogin = async () => {
+    try {
+      const credentials = await AuthenticationService.loginWithGithub();
+      if (credentials) {
+        router.push("/shop");
+      } else {
+        router.push("/login");
+      }
+    } catch (e) {
+      console.log("error opening google popup :", e);
+    }
+    console.log("[handleGithubLogin]");
+  };
+
   const inputClassnames =
     "h-12 px-4 p-2 mb-2 border rounded-lg text-gray-500 focus:outline-none focus:border-blue-500";
   return (
@@ -39,6 +72,13 @@ function Login() {
             variant="light"
             text="continuer avec google"
             iconSrc={GoogleIcon}
+            onClick={handleGoogleLogin}
+          />
+          <LoginButton
+            variant="light"
+            text="continuer avec github"
+            iconSrc={GoogleIcon}
+            onClick={handleGithubLogin}
           />
           <hr className="bg-slate-600" />
           <LoginButton
