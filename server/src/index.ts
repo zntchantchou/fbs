@@ -8,6 +8,9 @@ import dashboardRoutes from "./routes/dashboard.routes";
 import productRoutes from "./routes/product.routes";
 import userRoutes from "./routes/user.routes";
 import expensesRoutes from "./routes/expenses.routes";
+import { Auth } from "firebase-admin/auth";
+import AuthService from "./auth/auth";
+import { authMiddleware } from "./auth/auth.middleware";
 
 // CONFIG
 dotenv.config();
@@ -16,9 +19,10 @@ app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "15mb" }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
+app.use(authMiddleware);
 
 // ROUTES
 app.use("/dashboard", dashboardRoutes);
@@ -31,4 +35,5 @@ const port = Number(process.env.PORT) || 3001;
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server listening to port ${port}`);
+  console.log("Auth App", AuthService.app);
 });

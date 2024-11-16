@@ -1,11 +1,13 @@
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import {
   getAuth,
+  getIdToken,
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithPopup,
   UserCredential,
 } from "firebase/auth";
+import { getInstallations, getToken } from "firebase/installations";
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FB_API_KEY,
@@ -16,8 +18,9 @@ const firebaseConfig: FirebaseOptions = {
   appId: process.env.NEXT_PUBLIC_FB_MEASUREMENT_ID,
 };
 
-export class AuthService {
-  public firebaseAuth = getAuth(initializeApp(firebaseConfig));
+class AuthService {
+  private app = initializeApp(firebaseConfig);
+  public firebaseAuth = getAuth(this.app);
 
   public loginWithGoogle = async (): Promise<UserCredential | null> => {
     console.log("[handleGoogleLogin]");
@@ -49,13 +52,27 @@ export class AuthService {
     }
   };
 
-  public signOut() {
+  public async signOut(): Promise<void | null> {
     try {
       console.log("[AuthService] signout");
       return this.firebaseAuth.signOut();
     } catch (e) {
       console.log("Error signing out: ", e);
+      return null;
     }
+  }
+
+  private async getCurrentIdToken(): Promise<string | null> {
+    await this.firebaseAuth.authStateReady();
+    if (!this.firebaseAuth.currentUser) return null;
+    return getIdToken(this.firebaseAuth.currentUser);
+  }
+
+  public async getTokens() {
+    const installations = getInstallations(this.app);
+    const installationToken = getToken(installations);
+    const authIdToken = await this.getCurrentIdToken();
+    return { authIdToken, installationToken };
   }
 }
 
