@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { RootState } from "@/app/redux";
 export interface Product {
   productId: string;
   name: string;
@@ -62,12 +62,22 @@ export interface ExpenseByCategorySummary {
 }
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const state = getState() as RootState;
+      const token = state.auth.token;
+      if (token) headers.set("token", token);
+      return headers;
+    },
+  }),
   reducerPath: "api",
   tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses"],
   endpoints: (build) => ({
     getDashboardMetrics: build.query<DashboardMetrics, void>({
-      query: () => "/dashboard",
+      query: () => ({
+        url: "/dashboard",
+      }),
       providesTags: ["DashboardMetrics"],
     }),
     getProducts: build.query<Product[], string | void>({
