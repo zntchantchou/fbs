@@ -8,21 +8,21 @@ export const getProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    // const search = req.query.search?.toString();
-    // const products = await prisma.product.findMany({
-    //   where: {
-    //     name: {
-    //       contains: search,
-    //     },
-    //   },
-    // });
-    // console.log("BEFORE ERROR");
-    res.send("nada");
+    const search = req.query.search?.toString();
+    const products = await prisma.product.findMany({
+      where: {
+        name: {
+          contains: search,
+        },
+      },
+    });
+    console.log("BEFORE ERROR");
+    res.status(200).json(products);
     return;
   } catch (error) {
     // res.status(500).json({ message: "error retrieving products" });
     console.log("error");
-    res.json({ error });
+    // res.json({ error });
   }
 };
 

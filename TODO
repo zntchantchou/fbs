@@ -3,10 +3,12 @@ Api actions needed:
     ☐ create-cart
     ☐ add-to-cart
     ☐ delete-from-cart
+  Category:
+    ✔ get categories @done(24-11-19 15:41)
   Order:
     ☐ Create an order (by paying)
   Products:
-    ☐ get products (to view)
+    ✔ get products (to view) @done(24-11-19 15:41)
     ☐ search products (by search term)
     ☐ create product
     ☐ update product
@@ -17,7 +19,4 @@ Api actions needed:
   SalesSummary: 
     ☐ get last month
     ☐ get by date range
-
-
-=
   
