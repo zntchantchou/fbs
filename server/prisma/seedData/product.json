@@ -1,0 +1,45 @@
+[
+  {
+    "id": "d35623ee-bef6-42b2-8776-2f99f8bb4782",
+    "name": "Pinkscale Blazing Star",
+    "categoryId": "df8a03fa-c69c-4ffe-9e28-5febfb7a5ca9",
+    "price": 456.04,
+    "stockQuantity": 124
+  },
+  {
+    "id": "1afc136b-4d9f-4e8e-aace-8e1df908a404",
+    "name": "Rocky Mountain Zinnia",
+    "categoryId": "df8a03fa-c69c-4ffe-9e28-5febfb7a5ca9",
+    "price": 264.37,
+    "stockQuantity": 84
+  },
+  {
+    "id": "af84cc12-4fea-4f58-aece-f2ce92ca9580",
+    "name": "Guadalupe Suncup",
+    "categoryId": "df8a03fa-c69c-4ffe-9e28-5febfb7a5ca9",
+    "price": 555.93,
+    "stockQuantity": 236
+  },
+  {
+    "id": "98255f4e-40a6-470f-89a5-0792729f8947",
+    "name": "Purple Marshlocks",
+    "categoryId": "df8a03fa-c69c-4ffe-9e28-5febfb7a5ca9",
+    "price": 974.99,
+    "stockQuantity": 739009
+  },
+  {
+    "id": "2a339fb2-f9f3-43bc-a85a-b217a0a38f12",
+    "name": "Hamatocaulis Moss",
+    "categoryId": "df8a03fa-c69c-4ffe-9e28-5febfb7a5ca9",
+    "price": 639.9,
+    "stockQuantity": 754285
+  },
+
+  {
+    "id": "be2157fb-7454-405e-9511-bf7ba81b7726",
+    "name": "Thladiantha",
+    "categoryId": "df8a03fa-c69c-4ffe-9e28-5febfb7a5ca9",
+    "price": 699.0,
+    "stockQuantity": 399124
+  }
+]

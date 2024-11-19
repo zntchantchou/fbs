@@ -1,0 +1,23 @@
+Api actions needed:
+  Cart:
+    ☐ create-cart
+    ☐ add-to-cart
+    ☐ delete-from-cart
+  Order:
+    ☐ Create an order (by paying)
+  Products:
+    ☐ get products (to view)
+    ☐ search products (by search term)
+    ☐ create product
+    ☐ update product
+    ☐ publish
+    ☐ unpublish
+  UserSettings:
+    ☐ update settings
+  SalesSummary: 
+    ☐ get last month
+    ☐ get by date range
+
+
+=
+  
