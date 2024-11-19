@@ -27,7 +27,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
     >
       <Sidebar></Sidebar>
       <main
-        className={`flex flex-col w-full py-7 px-9 bg-gray-100 ${mainPaddingLeft}`}
+        className={`flex flex-col w-full py-7 px-9 md:pl-32 bg-gray-100 ${mainPaddingLeft}`}
       >
         <Navbar></Navbar>
         {children}

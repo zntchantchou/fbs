@@ -4,16 +4,25 @@ import Image from "next/image";
 import { useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
 
-function Uploader() {
+type UploaderProps = { imageGalleryMaxHeight?: string };
+
+function Uploader({ imageGalleryMaxHeight }: UploaderProps) {
   const [images, setImages] = useState<ImageListType>([]);
 
   const maxNumber = 5;
+  const imageGalleryMaxHeightCss = imageGalleryMaxHeight
+    ? `max-h-[${imageGalleryMaxHeight}]`
+    : "";
 
-  const onChange = (
+  const onChange = async (
     imageList: ImageListType,
     addUpdateIndex: number[] | undefined
   ) => {
-    console.log("ImageList: ", imageList);
+    console.log("ONCHANGE --------- \n");
+    for (const img of imageList) {
+      console.log("ArrayBuffer \n", img.file?.arrayBuffer());
+      const AB = await img.file?.arrayBuffer();
+    }
     setImages(imageList);
   };
 
@@ -63,10 +72,10 @@ function Uploader() {
             >
               Remove all
             </button>
-            <div className="w-full">
+            <div
+              className={`w-full overflow-y-auto bg-slate-50 max-w-2xl ${imageGalleryMaxHeightCss}`}
+            >
               {imageList.map((image, index) => {
-                console.log("IMAGE : ", image);
-                console.log("IMAGE : ", image.file);
                 return image.dataString ? (
                   <div
                     key={index}
@@ -79,23 +88,23 @@ function Uploader() {
                       alt="uploaded image of the product"
                     />
                     {/* image controls */}
-                    <div className="w-full h-full">
+                    <div className="w-full h-full px-3">
                       <div className="w-full h-1/3 flex justify-between items-center px-2">
                         <p className="max-w-2xl text-gray-600">
-                          Picture {index}
+                          Picture {index} : {image.file?.name}
                         </p>
                       </div>
-                      <div className="w-full h-2/3 flex items-center justify-start px-2">
+                      <div className="w-full h-2/3 flex items-center justify-start px-2 mr-6">
                         <button
                           type="submit"
-                          className="mb-4 mr-2 py-2 px-4 h-10 flex items-center justify-center bg-gray-400 text-white rounded hover:bg-gray-600"
+                          className="mb-4 mr-2 py-2 px-6 h-10 flex items-center justify-center bg-blue-500 text-white rounded hover:bg-blue-700"
                           onClick={() => onImageUpdate(index)}
                         >
                           Update
                         </button>
                         <button
                           type="submit"
-                          className="mb-4 py-2 px-4 h-10 flex items-center justify-center bg-gray-400 text-white rounded hover:bg-gray-600"
+                          className="mb-4 py-4 px-6 h-10 flex items-center justify-center bg-red-500 text-white rounded hover:bg-red-700"
                           onClick={() => onImageRemove(index)}
                         >
                           Delete
