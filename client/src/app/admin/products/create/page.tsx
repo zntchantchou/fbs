@@ -15,7 +15,7 @@ function CreateProduct() {
   // };
   return (
     <div className="w-full h-full flex justify-center min-w-[300px]">
-      <div className="w-full md:w-2/5 flex flex-col items-center md:flex md:flex-col md:items-center text-start">
+      <div className="w-full md:w-3/5 xl:w-2/5 flex flex-col items-center md:flex md:flex-col md:items-center text-start">
         {/* TITLE */}
         {/* FORM */}
         <div className="w-full md:flex-col md:items-center mt-4">
@@ -65,19 +65,21 @@ function CreateProduct() {
 
           {/* DROP ZONE */}
           <Uploader imageGalleryMaxHeight="300px" />
-          <button
-            type="submit"
-            className="py-2 px-6 bg-green-700 text-white rounded hover:bg-green-900"
-          >
-            Create
-          </button>
-          <button
-            type="submit"
-            className="ml-2 py-2 px-6 bg-red-500 text-white rounded hover:bg-red-700"
-            // onClick={onClose}
-          >
-            Cancel
-          </button>
+          <div className="flex flex-col md:flex-row">
+            <button
+              type="submit"
+              className="py-3 px-6 bg-green-700 text-white rounded hover:bg-green-900"
+            >
+              Create
+            </button>
+            <button
+              type="submit"
+              className="mt-2 md:mt-0 md:ml-2 py-3 px-8 bg-red-500 text-white rounded hover:bg-red-700"
+              // onClick={onClose}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
         <div></div>
       </div>
