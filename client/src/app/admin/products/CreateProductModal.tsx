@@ -48,7 +48,7 @@ function CreateProductModal({
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-20">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div className="relative top-20 mx-auto p-5 border w-96 md:w-1/2 lg:w-2/3 shadow-lg rounded-md bg-white">
         <Header name="Create new product" />
         <form onSubmit={handleSubmit} className="mt-10">
           {/* PRODUCT NAME */}

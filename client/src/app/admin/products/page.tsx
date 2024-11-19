@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  NewProduct,
-  useCreateProductMutation,
-  useGetProductsQuery,
-} from "@/state/api";
+import { useCreateProductMutation, useGetProductsQuery } from "@/state/api";
 import { PlusCircleIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import Header from "@/app/(components)/Header";
@@ -12,15 +8,19 @@ import Rating from "@/app/(components)/Rating";
 import CreateProductModal from "./CreateProductModal";
 import ProductIcon from "@/assets/product.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function Products() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const { data: products, isError, isLoading } = useGetProductsQuery();
   const [createProduct] = useCreateProductMutation();
-  const handleCreateProduct = async (productData: NewProduct) =>
-    await createProduct(productData);
+  const goToCreatePage = () => {
+    console.log("[go to create page]");
+    router.push("/admin/products/create");
+  };
+  // await createProduct(productData);
 
   const productsList = products?.map((product) => {
     const rating = product.rating ? (
@@ -48,7 +48,7 @@ function Products() {
         <CreateProductModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onCreate={handleCreateProduct}
+          onCreate={createProduct}
         />
       </div>
     );
@@ -90,7 +90,7 @@ function Products() {
         <Header name="products" />
         <button
           className="flex items-center bg-blue-500 hover:bg-blue-700 text-gray-200 font-bold py-2 px-4 rounded"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => goToCreatePage()}
         >
           <PlusCircleIcon className="w-5 h-5 mr-2 !text-gray-200" />
           Create product
