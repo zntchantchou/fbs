@@ -1,4 +1,5 @@
 import Header from "@/app/(components)/Header";
+import Uploader from "@/app/(components)/Uploader";
 
 function CreateProduct() {
   const labelClassnames = "block my-1 text-sm font-medium text-gray-700";
@@ -62,18 +63,16 @@ function CreateProduct() {
         </label>
 
         {/* DROP ZONE */}
-        <div className="w-full max-w-2xl h-20 mb-4 border-dashed bg-blue-300 hover:bg-blue-200 cursor-pointer border-indigo-500 border-2 rounded-md text-blue-600 text-md flex items-center justify-center">
-          Drop a file here or click to browse
-        </div>
+        <Uploader />
         <button
           type="submit"
-          className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
+          className="py-2 px-4 bg-green-700 text-white rounded hover:bg-green-900"
         >
           Create
         </button>
         <button
           type="submit"
-          className="ml-2 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
+          className="ml-2 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700"
           // onClick={onClose}
         >
           Cancel

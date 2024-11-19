@@ -20,9 +20,6 @@ function CreateProductModal({
   onCreate,
   onClose,
 }: CreateProductModalProps) {
-  const labelClassnames = "block my-1 text-sm font-medium text-gray-700";
-  const inputClassnames =
-    "block w-full border-gray-400 border-2 rounded-md mb-2 p-2";
   const [formData, setFormData] = useState({
     productId: v4(),
     name: "",
@@ -107,7 +104,7 @@ function CreateProductModal({
           </button>
           <button
             type="submit"
-            className="ml-2 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
+            className="ml-2 py-2 px-4 bg-red-500 text-white rounded hover:bg-blue-700"
             onClick={onClose}
           >
             Cancel
