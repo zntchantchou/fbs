@@ -19,12 +19,6 @@ export const getProducts = async (
         },
       },
     });
-    const awsBucketGet = await StorageService.client?.send(
-      new GetObjectCommand({
-        Bucket: process.env.AWS_BUCKET,
-        Key: "raspberry.jpeg",
-      })
-    );
     res.status(200).json(products);
     return;
   } catch (error) {
