@@ -18,9 +18,10 @@ export const getProducts = async (
         },
       },
     });
+    console.log("BUCKET ARN ", process.env.AWS_BUCKET);
     const awsBucketGet = await StorageService.bucket?.send(
       new GetObjectCommand({
-        Bucket: process.env.AWS_BUCKET_ARN,
+        Bucket: process.env.AWS_BUCKET,
         Key: "raspberry.jpeg",
       })
     );
@@ -40,7 +41,6 @@ export const createProduct = async (
     console.log("REQ>FILES: \n", req.files);
     console.log("REQ>BODY: \n", req.body);
     console.log("REQ>HEADERS: \n", req.headers);
-    StorageService;
     // const category = await prisma.category.findUnique({
     //   where: { name: categoryLabel },
     // });
