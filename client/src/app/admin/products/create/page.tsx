@@ -7,28 +7,45 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { ImageListType } from "react-images-uploading";
 
 type ProductForm = {
-  price: number | null;
+  price?: number;
   name: string | null;
-  stockQuantity: number | null;
+  stockQuantity?: number;
   pictures: ImageListType | null;
+  category: string | null;
 };
 
 const initialForm: ProductForm = {
-  price: null,
+  price: 0,
   name: null,
-  stockQuantity: null,
+  stockQuantity: 0,
   pictures: null,
+  category: "4 strings",
 };
 
 function CreateProduct() {
   // const [pictures, setPictures] = useState<ImageListType>([]);
   const [formData, setFormData] = useState<ProductForm>(initialForm);
-  const [createProduct, createProductResult] = useCreateProductMutation();
+  const [createProduct, _] = useCreateProductMutation();
   const {
     data: categories,
     error: categoriesError,
     isLoading: isLoadingCategories,
   } = useGetCategoriesQuery();
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    const numericFields = ["price", "stockQuantity"];
+    setFormData({
+      ...formData,
+      [name]: numericFields.includes(name) ? parseFloat(value) : value,
+    } as ProductForm);
+  };
+
+  const handleReset = () => {
+    setFormData(initialForm);
+  };
 
   const updateImages = (images: ImageListType) => {
     console.log("updateImage ", images);
@@ -43,15 +60,13 @@ function CreateProduct() {
       !formData.name ||
       !formData.price ||
       !formData.stockQuantity ||
-      (formData.pictures && formData?.pictures?.length < 1)
+      (formData.pictures && formData?.pictures?.length < 1) ||
+      !formData.category
     ) {
-      console.log("VALIDATION ERROR: ");
+      console.error("VALIDATION ERROR: ");
       return;
     }
     const requestData = new FormData();
-    if (formData.name) {
-      requestData.set("name", formData.name as string);
-    }
     if (formData.name) {
       requestData.set("name", formData.name as string);
     }
@@ -60,6 +75,7 @@ function CreateProduct() {
       "stockQuantity",
       formData.stockQuantity?.toString() as string
     );
+    requestData.set("category", formData.category as string);
     if (formData.pictures) {
       for (const pic of formData.pictures) {
         if (pic.file) {
@@ -82,23 +98,12 @@ function CreateProduct() {
   const inputClassnames =
     "block w-full max-w-2xl border-gray-400 border-2 rounded-md mb-4 mt-2 p-2";
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    const numericFields = ["price", "stockQuantity"];
-    setFormData({
-      ...formData,
-      [name]: numericFields.includes(name) ? parseFloat(value) : value,
-    } as ProductForm);
-  };
-
   return (
     <div className="w-full h-full flex justify-center min-w-[300px]">
       <div className="w-full md:w-3/5 xl:w-2/5 flex flex-col items-center md:flex md:flex-col md:items-center text-start">
         {/* TITLE */}
         {/* FORM */}
-        <div className="lg:w-full md:flex-col md:items-center mt-4">
+        <div className="w-5/6 lg:w-full md:flex-col md:items-center mt-4">
           <Header name="Create a product" />
           {/* PRODUCT NAME */}
           <label htmlFor="productName" className={labelClassnames}>
@@ -145,7 +150,7 @@ function CreateProduct() {
           </label>
           <select
             name="category"
-            className="bg-blue-200 h-10 rounded px-6"
+            className="bg-blue-200 h-10 rounded px-6 w-full md:max-w-32"
             onChange={handleChange}
           >
             {categories &&
@@ -171,9 +176,9 @@ function CreateProduct() {
             </button>
             <button
               className="mt-2 md:mt-0 md:ml-2 py-3 px-8 bg-red-500 text-white rounded hover:bg-red-700"
-              // onClick={onClose}
+              onClick={handleReset}
             >
-              Cancel
+              Reset
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import StorageService from "../services/s3.ts";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
+import CategoryService from "services/category.service.ts";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +19,6 @@ export const getProducts = async (
         },
       },
     });
-    // console.log("BUCKET ARN ", process.env.AWS_BUCKET);
     const awsBucketGet = await StorageService.client?.send(
       new GetObjectCommand({
         Bucket: process.env.AWS_BUCKET,
@@ -41,17 +41,39 @@ export const createProduct = async (
     // console.log("REQ>FILES: \n", req.files);
     // console.log("REQ>BODY: \n", req.body);
     // console.log("REQ>HEADERS: \n", req.headers);
-    if (!req.files) return;
-    const files = req.files as Express.Multer.File[];
-    for (const [index, file] of Object.entries(files)) {
-      // console.log("ONE FILE BYTELENGTH ", file.);
-      const result = await StorageService.uploadFile({
-        productId: "123456",
-        file,
-        filename: index + "-" + file.originalname,
-      });
-      console.log("RESULT AFTER UPLOAD:", result);
+    if (
+      !req.body.name ||
+      isNaN(req.body.price) ||
+      !req.body.stockQuantity ||
+      !req.body.category ||
+      !req?.files?.length
+    ) {
+      res.status(400).json({ error: "Bad Request" });
+      return;
     }
+    // perform aws side
+    const files = req.files as Express.Multer.File[];
+    // const saveFilePromises = files.map((file, index) =>
+    //   StorageService.uploadFile({
+    //     productId: "123456",
+    //     file,
+    //     filename: index + "-" + file.originalname,
+    //   })
+    // );
+    // const savedFiles = await Promise.all(saveFilePromises);
+    const category = await CategoryService.getCategoryByName(req.body.category);
+    console.log("CATEGORY ", category);
+    // if successful perform product creation
+    // will run a job to delete folders without a product
+    // const newProduct = await prisma.product.create({
+    //   data: {
+    //     name: req.body.name,
+    //     price: req.body.price,
+
+    //   }
+    // })
+    // console.log("RESULT AFTER UPLOAD:", savedFiles);
+
     // if(req.files && req?.files?.length) {
     //   for(let file of req.files) {
     //     StorageService.uploadFile()
