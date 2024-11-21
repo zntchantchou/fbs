@@ -18,8 +18,8 @@ export const getProducts = async (
         },
       },
     });
-    console.log("BUCKET ARN ", process.env.AWS_BUCKET);
-    const awsBucketGet = await StorageService.bucket?.send(
+    // console.log("BUCKET ARN ", process.env.AWS_BUCKET);
+    const awsBucketGet = await StorageService.client?.send(
       new GetObjectCommand({
         Bucket: process.env.AWS_BUCKET,
         Key: "raspberry.jpeg",
@@ -38,9 +38,25 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    console.log("REQ>FILES: \n", req.files);
-    console.log("REQ>BODY: \n", req.body);
-    console.log("REQ>HEADERS: \n", req.headers);
+    // console.log("REQ>FILES: \n", req.files);
+    // console.log("REQ>BODY: \n", req.body);
+    // console.log("REQ>HEADERS: \n", req.headers);
+    if (!req.files) return;
+    const files = req.files as Express.Multer.File[];
+    for (const [index, file] of Object.entries(files)) {
+      // console.log("ONE FILE BYTELENGTH ", file.);
+      const result = await StorageService.uploadFile({
+        productId: "123456",
+        file,
+        filename: index + "-" + file.originalname,
+      });
+      console.log("RESULT AFTER UPLOAD:", result);
+    }
+    // if(req.files && req?.files?.length) {
+    //   for(let file of req.files) {
+    //     StorageService.uploadFile()
+    //   }
+    // }
     // const category = await prisma.category.findUnique({
     //   where: { name: categoryLabel },
     // });
