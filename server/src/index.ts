@@ -4,7 +4,6 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
-import dashboardRoutes from "./routes/dashboard.routes.ts";
 import productRoutes from "./routes/product.routes.ts";
 import categoryRoutes from "./routes/category.routes.ts";
 
@@ -22,7 +21,6 @@ app.use(cors());
 // app.use(authMiddleware());
 
 // ROUTES
-app.use("/dashboard", dashboardRoutes);
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
 

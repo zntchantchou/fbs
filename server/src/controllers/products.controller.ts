@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import StorageService from "../services/s3.ts";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import CategoryService from "services/category.service.ts";
+import ProductService, { NewProductData } from "services/product.service.ts";
 
 const prisma = new PrismaClient();
 
@@ -25,7 +25,6 @@ export const getProducts = async (
         Key: "raspberry.jpeg",
       })
     );
-    console.log("awsBucketGet: \n ----", awsBucketGet);
     res.status(200).json(products);
     return;
   } catch (error) {
@@ -38,9 +37,6 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    // console.log("REQ>FILES: \n", req.files);
-    // console.log("REQ>BODY: \n", req.body);
-    // console.log("REQ>HEADERS: \n", req.headers);
     if (
       !req.body.name ||
       isNaN(req.body.price) ||
@@ -51,71 +47,23 @@ export const createProduct = async (
       res.status(400).json({ error: "Bad Request" });
       return;
     }
-    // perform aws side
     const files = req.files as Express.Multer.File[];
-    // const saveFilePromises = files.map((file, index) =>
-    //   StorageService.uploadFile({
-    //     productId: "123456",
-    //     file,
-    //     filename: index + "-" + file.originalname,
-    //   })
-    // );
-    // const savedFiles = await Promise.all(saveFilePromises);
-    const category = await CategoryService.getCategoryByName(req.body.category);
-    console.log("CATEGORY ", category);
-    // if successful perform product creation
-    // will run a job to delete folders without a product
-    // const newProduct = await prisma.product.create({
-    //   data: {
-    //     name: req.body.name,
-    //     price: req.body.price,
-
-    //   }
-    // })
-    // console.log("RESULT AFTER UPLOAD:", savedFiles);
-
-    // if(req.files && req?.files?.length) {
-    //   for(let file of req.files) {
-    //     StorageService.uploadFile()
-    //   }
-    // }
-    // const category = await prisma.category.findUnique({
-    //   where: { name: categoryLabel },
-    // });
-    // if (!category) {
-    //   res.status(404).send("Could not find category");
-    //   return;
-    // }
-
-    // const product = await prisma.product.create({
-    //   data: {
-    //     name,
-    //     price,
-    //     categoryId: category.id,
-    //     stockQuantity,
-    //   },
-    // });
-    // const pictures = productPictures as ProductPictureType[];
-    // const createPicturesPromises = [];
-
-    // for (let picture of pictures) {
-    //   if (picture.url && !Number.isNaN(picture.index)) {
-    //     createPicturesPromises.push(
-    //       await prisma.productPicture.create({
-    //         data: {
-    //           index: picture.index,
-    //           url: picture.url,
-    //           productId: product.id,
-    //         },
-    //       })
-    //     );
-    //   }
-    // }
-    // const savedPictures = await Promise.all(createPicturesPromises);
-    // const { id, ...rest } = product;
-    // res.status(201).json({ ...rest, totalPictures: savedPictures.length });
-
-    res.status(200).json({ ok: "ok" });
+    const saveFilePromises = files.map((file) =>
+      StorageService.uploadFile(file)
+    );
+    const savedFiles = await Promise.all(saveFilePromises);
+    const productData: NewProductData = {
+      name: req.body.name,
+      stockQuantity: Number.parseInt(req.body.stockQuantity),
+      price: Number.parseFloat(req.body.price),
+      categoryName: req.body.category,
+      pictures: savedFiles.map((picture, index) => ({
+        url: picture.Location as string,
+        index,
+      })),
+    };
+    const savedProduct = await ProductService.saveProduct(productData);
+    res.status(201).json({ ...savedProduct, totalPictures: savedFiles.length });
   } catch (error) {
     console.log("ERROR : \n", error);
   }

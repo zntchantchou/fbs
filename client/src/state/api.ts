@@ -17,6 +17,7 @@ export interface NewProduct {
   name: string;
   price: number;
   stockQuantity: number;
+  category: string;
   pictures: ImageListType;
 }
 
