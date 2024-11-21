@@ -15,13 +15,13 @@ class StorageService {
     });
   }
 
-  public async uploadFile(file: Express.Multer.File) {
+  public async uploadFile(file: Express.Multer.File, folderName: string) {
     if (!this.client) throw new Error("[uploadFile] Could not get client");
     const upload = new Upload({
       client: this.client,
       params: {
         Bucket: process.env.AWS_BUCKET,
-        Key: file.originalname,
+        Key: folderName + "/" + file.originalname,
         Body: createReadStream(file.path),
       },
     });

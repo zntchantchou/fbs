@@ -3,7 +3,7 @@ import {
   createProduct,
   getProducts,
 } from "../controllers/products.controller.ts";
-import { upload } from "../middleware/multer.ts";
+import { upload } from "../middleware/multer.middleware.ts";
 
 const router = Router();
 

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import StorageService from "../services/s3.ts";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import StorageService from "../services/storage.service.ts";
 import ProductService, { NewProductData } from "services/product.service.ts";
+import { randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -18,6 +18,7 @@ export const getProducts = async (
           contains: search,
         },
       },
+      include: { productPicture: true },
     });
     res.status(200).json(products);
     return;
@@ -42,8 +43,9 @@ export const createProduct = async (
       return;
     }
     const files = req.files as Express.Multer.File[];
+    const folderName = randomUUID();
     const saveFilePromises = files.map((file) =>
-      StorageService.uploadFile(file)
+      StorageService.uploadFile(file, folderName)
     );
     const savedFiles = await Promise.all(saveFilePromises);
     const productData: NewProductData = {
@@ -57,7 +59,8 @@ export const createProduct = async (
       })),
     };
     const savedProduct = await ProductService.saveProduct(productData);
-    res.status(201).json({ ...savedProduct, totalPictures: savedFiles.length });
+    const { id, ...responseData } = savedProduct;
+    res.status(201).json({ ...responseData, totalPictures: savedFiles.length });
   } catch (error) {
     console.log("ERROR : \n", error);
   }

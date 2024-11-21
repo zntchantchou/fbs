@@ -1,4 +1,4 @@
-import { PrismaClient, Product } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import CategoryService from "./category.service.ts";
 
 const prismaClient = new PrismaClient();
