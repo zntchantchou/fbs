@@ -166,7 +166,7 @@ function CreateProduct() {
           </label>
 
           {/* DROP ZONE */}
-          <Uploader imageGalleryMaxHeight="300px" onUpdate={updateImages} />
+          <Uploader imageGalleryMaxHeight="200px" onUpdate={updateImages} />
           <div className="flex flex-col md:flex-row max-w-2xl">
             <button
               className="py-3 px-6 bg-green-700 text-white rounded hover:bg-green-900"
