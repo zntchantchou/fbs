@@ -9,7 +9,7 @@ Api actions needed:
     ☐ Create an order (by paying)
   Products:
     ✔ get products (to view) @done(24-11-19 15:41)
-    ☐ search products (by search term)
+    ✔ search products (by search term) @done(24-11-19 15:46)
     ☐ create product
     ☐ update product
     ☐ publish

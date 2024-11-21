@@ -7,7 +7,6 @@ import cors from "cors";
 import dashboardRoutes from "./routes/dashboard.routes";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
-import { authMiddleware } from "./auth/auth.middleware";
 
 // CONFIG
 dotenv.config();
@@ -16,8 +15,8 @@ app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
-app.use(bodyParser.json({ limit: "15mb" }));
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json({ limit: "30mb" }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 // app.use(authMiddleware());
 

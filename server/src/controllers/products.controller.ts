@@ -16,19 +16,11 @@ export const getProducts = async (
         },
       },
     });
-    console.log("BEFORE ERROR");
     res.status(200).json(products);
     return;
   } catch (error) {
-    // res.status(500).json({ message: "error retrieving products" });
-    console.log("error");
-    // res.json({ error });
+    console.log("[GET PRODUCTS] error", error);
   }
-};
-
-type ProductPictureType = {
-  url: string;
-  index: number;
 };
 
 export const createProduct = async (
@@ -36,43 +28,47 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { name, price, stockQuantity, categoryLabel, productPictures } =
-      req.body;
+    console.log("REQ>FILES: \n", req.files);
+    console.log("REQ>BODY: \n", req.body);
+    console.log("REQ>HEADERS: \n", req.headers);
 
-    const category = await prisma.category.findUnique({
-      where: { name: categoryLabel },
-    });
-    if (!category) {
-      res.status(404).send("Could not find category");
-      return;
-    }
+    // const category = await prisma.category.findUnique({
+    //   where: { name: categoryLabel },
+    // });
+    // if (!category) {
+    //   res.status(404).send("Could not find category");
+    //   return;
+    // }
 
-    const product = await prisma.product.create({
-      data: {
-        name,
-        price,
-        categoryId: category.id,
-        stockQuantity,
-      },
-    });
-    const pictures = productPictures as ProductPictureType[];
-    const createPicturesPromises = [];
+    // const product = await prisma.product.create({
+    //   data: {
+    //     name,
+    //     price,
+    //     categoryId: category.id,
+    //     stockQuantity,
+    //   },
+    // });
+    // const pictures = productPictures as ProductPictureType[];
+    // const createPicturesPromises = [];
 
-    for (let picture of pictures) {
-      if (picture.url && !Number.isNaN(picture.index)) {
-        createPicturesPromises.push(
-          await prisma.productPicture.create({
-            data: {
-              index: picture.index,
-              url: picture.url,
-              productId: product.id,
-            },
-          })
-        );
-      }
-    }
-    const savedPictures = await Promise.all(createPicturesPromises);
-    const { id, ...rest } = product;
-    res.status(201).json({ ...rest, totalPictures: savedPictures.length });
-  } catch {}
+    // for (let picture of pictures) {
+    //   if (picture.url && !Number.isNaN(picture.index)) {
+    //     createPicturesPromises.push(
+    //       await prisma.productPicture.create({
+    //         data: {
+    //           index: picture.index,
+    //           url: picture.url,
+    //           productId: product.id,
+    //         },
+    //       })
+    //     );
+    //   }
+    // }
+    // const savedPictures = await Promise.all(createPicturesPromises);
+    // const { id, ...rest } = product;
+    // res.status(201).json({ ...rest, totalPictures: savedPictures.length });
+    res.status(200).json({ ok: "ok" });
+  } catch (error) {
+    console.log("ERROR : \n", error);
+  }
 };

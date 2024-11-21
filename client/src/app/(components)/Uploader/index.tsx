@@ -4,9 +4,12 @@ import Image from "next/image";
 import { useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
 
-type UploaderProps = { imageGalleryMaxHeight?: string };
+type UploaderProps = {
+  imageGalleryMaxHeight?: string;
+  onUpdate: (images: ImageListType) => void;
+};
 
-function Uploader({ imageGalleryMaxHeight }: UploaderProps) {
+function Uploader({ imageGalleryMaxHeight, onUpdate }: UploaderProps) {
   const [images, setImages] = useState<ImageListType>([]);
 
   const maxNumber = 5;
@@ -19,11 +22,8 @@ function Uploader({ imageGalleryMaxHeight }: UploaderProps) {
     addUpdateIndex: number[] | undefined
   ) => {
     console.log("ONCHANGE --------- \n");
-    for (const img of imageList) {
-      console.log("ArrayBuffer \n", img.file?.arrayBuffer());
-      const AB = await img.file?.arrayBuffer();
-    }
     setImages(imageList);
+    onUpdate(imageList);
   };
 
   // const uploadedImages = (images: ImageListType) => {
