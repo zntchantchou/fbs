@@ -77,4 +77,8 @@ export const api = createApi({
   }),
 });
 
-export const { useGetProductsQuery, useCreateProductMutation } = api;
+export const {
+  useGetProductsQuery,
+  useGetCategoriesQuery,
+  useCreateProductMutation,
+} = api;

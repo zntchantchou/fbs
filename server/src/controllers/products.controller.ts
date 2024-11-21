@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import StorageService from "../services/s3.ts";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 
 const prisma = new PrismaClient();
 
@@ -16,6 +18,13 @@ export const getProducts = async (
         },
       },
     });
+    const awsBucketGet = await StorageService.bucket?.send(
+      new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET_ARN,
+        Key: "raspberry.jpeg",
+      })
+    );
+    console.log("awsBucketGet: \n ----", awsBucketGet);
     res.status(200).json(products);
     return;
   } catch (error) {
@@ -31,7 +40,7 @@ export const createProduct = async (
     console.log("REQ>FILES: \n", req.files);
     console.log("REQ>BODY: \n", req.body);
     console.log("REQ>HEADERS: \n", req.headers);
-
+    StorageService;
     // const category = await prisma.category.findUnique({
     //   where: { name: categoryLabel },
     // });
@@ -67,6 +76,7 @@ export const createProduct = async (
     // const savedPictures = await Promise.all(createPicturesPromises);
     // const { id, ...rest } = product;
     // res.status(201).json({ ...rest, totalPictures: savedPictures.length });
+
     res.status(200).json({ ok: "ok" });
   } catch (error) {
     console.log("ERROR : \n", error);

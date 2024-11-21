@@ -2,7 +2,7 @@
 
 import Header from "@/app/(components)/Header";
 import Uploader from "@/app/(components)/Uploader";
-import { useCreateProductMutation } from "@/state/api";
+import { useCreateProductMutation, useGetCategoriesQuery } from "@/state/api";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { ImageListType } from "react-images-uploading";
 
@@ -20,16 +20,16 @@ const initialForm: ProductForm = {
   pictures: null,
 };
 
-// type ProductPicture = {
-//   index: number;
-//   file: File;
-//   name: string;
-// };
-
 function CreateProduct() {
   // const [pictures, setPictures] = useState<ImageListType>([]);
   const [formData, setFormData] = useState<ProductForm>(initialForm);
   const [createProduct, createProductResult] = useCreateProductMutation();
+  const {
+    data: categories,
+    error: categoriesError,
+    isLoading: isLoadingCategories,
+  } = useGetCategoriesQuery();
+
   const updateImages = (images: ImageListType) => {
     console.log("updateImage ", images);
     // setPictures(images);
@@ -39,15 +39,28 @@ function CreateProduct() {
   const handleCreateProduct = async (e: FormEvent<HTMLElement>) => {
     console.log("handleCreateProduct ");
     e.preventDefault();
+    if (
+      !formData.name ||
+      !formData.price ||
+      !formData.stockQuantity ||
+      (formData.pictures && formData?.pictures?.length < 1)
+    ) {
+      console.log("VALIDATION ERROR: ");
+      return;
+    }
     const requestData = new FormData();
-    requestData.set("name", formData.name as string);
+    if (formData.name) {
+      requestData.set("name", formData.name as string);
+    }
+    if (formData.name) {
+      requestData.set("name", formData.name as string);
+    }
     requestData.set("price", formData.price?.toString() as string);
     requestData.set(
       "stockQuantity",
       formData.stockQuantity?.toString() as string
     );
     if (formData.pictures) {
-      // if (!formData.name || !formData.price || !formData.stockQuantity) return;
       for (const pic of formData.pictures) {
         if (pic.file) {
           const buffer = await pic.file.arrayBuffer();
@@ -58,8 +71,6 @@ function CreateProduct() {
         }
       }
       console.log("REQUEST DATA pic 1: ", requestData.get("pictures"));
-      // console.log("REQUEST DATA 1: ", requestData.get("pic-1"));
-      // console.log("REQUEST DATA 2: ", requestData.get("pic-2"));
       const created = await createProduct(requestData);
       if (created) {
         console.log("Product has been created: ", created);
@@ -71,14 +82,15 @@ function CreateProduct() {
   const inputClassnames =
     "block w-full max-w-2xl border-gray-400 border-2 rounded-md mb-4 mt-2 p-2";
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     const numericFields = ["price", "stockQuantity"];
     setFormData({
       ...formData,
       [name]: numericFields.includes(name) ? parseFloat(value) : value,
     } as ProductForm);
-    // console.log("FormDATA: \n", formData, pictures);
   };
 
   return (
@@ -126,6 +138,23 @@ function CreateProduct() {
             value={formData?.stockQuantity || 0}
             className={inputClassnames}
           />
+
+          {/* CATEGORY */}
+          <label htmlFor="category" className={labelClassnames}>
+            Category
+          </label>
+          <select
+            name="category"
+            className="bg-blue-200 h-10 rounded px-6"
+            onChange={handleChange}
+          >
+            {categories &&
+              categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
           {/* PICTURES */}
           <label htmlFor="Pictures" className={labelClassnames}>
             Pictures
@@ -135,7 +164,6 @@ function CreateProduct() {
           <Uploader imageGalleryMaxHeight="300px" onUpdate={updateImages} />
           <div className="flex flex-col md:flex-row max-w-2xl">
             <button
-              // type="submit"
               className="py-3 px-6 bg-green-700 text-white rounded hover:bg-green-900"
               onClick={handleCreateProduct}
             >

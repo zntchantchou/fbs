@@ -1,7 +1,7 @@
 /// <reference path="../types/express/index.d.ts" />
 
 import { NextFunction, Request, Response } from "express";
-import AuthService from "./auth";
+import AuthService from "./auth.js";
 
 export async function authMiddlewareFn(
   req: Request,

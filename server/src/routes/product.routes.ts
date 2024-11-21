@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { createProduct, getProducts } from "../controllers/products.controller";
-import { upload } from "../middleware/multer";
+import {
+  createProduct,
+  getProducts,
+} from "../controllers/products.controller.ts";
+import { upload } from "../middleware/multer.ts";
 
 const router = Router();
 
