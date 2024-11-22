@@ -2,7 +2,7 @@
 import { AuthenticationService } from "@/auth/auth-service";
 // import { useEffect } from "react";
 
-function Shop() {
+function Store() {
   console.log("Auth at Shop: ", AuthenticationService.firebaseAuth.currentUser);
   // useEffect(() => {
   //   console.log(
@@ -10,7 +10,7 @@ function Shop() {
   //     AuthenticationService.firebaseAuth.currentUser
   //   );
   // }, []);
-  return <div>Shop</div>;
+  return <div>Store</div>;
 }
 
-export default Shop;
+export default Store;

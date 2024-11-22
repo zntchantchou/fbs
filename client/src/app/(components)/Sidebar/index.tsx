@@ -60,9 +60,8 @@ function Sidebar() {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
   };
 
-  const sidebarClassnames = `fixed flex flex-col ${
-    isSidebarCollapsed ? "w-0 md:w-16" : "w-full sm:w-64"
-  } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
+  const panelWidth = isSidebarCollapsed ? "w-0 md:w-16" : "w-[100vw] sm:w-64";
+  const sidebarClassnames = `fixed flex flex-col transition-all bg-white duration-300 overflow-hidden h-full shadow-md z-40 ${panelWidth}`;
   return (
     <div className={sidebarClassnames}>
       {/* LOGO */}
@@ -71,11 +70,11 @@ function Sidebar() {
           isSidebarCollapsed ? "px-5" : "px-8"
         }`}
       >
-        <Image src={BassIcon} alt="website icon" height={50} />
+        <Image src={BassIcon} alt="website icon" height={46} />
         <h1
           className={`${
             isSidebarCollapsed ? "hidden" : "block"
-          } font-extrabold text-2xl`}
+          } font-extrabold text-xl`}
         >
           Buy Basses
         </h1>
