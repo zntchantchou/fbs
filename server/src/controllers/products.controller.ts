@@ -37,6 +37,9 @@ export const createProduct = async (
       isNaN(req.body.price) ||
       !req.body.stockQuantity ||
       !req.body.category ||
+      !req.body.brand ||
+      !req.body.description ||
+      !req.body.model ||
       !req?.files?.length
     ) {
       res.status(400).json({ error: "Bad Request" });
@@ -53,6 +56,9 @@ export const createProduct = async (
       stockQuantity: Number.parseInt(req.body.stockQuantity),
       price: Number.parseFloat(req.body.price),
       categoryName: req.body.category,
+      brand: req.body.brand,
+      description: req.body.description,
+      model: req.body.model,
       pictures: savedFiles.map((picture, index) => ({
         url: picture.Location as string,
         index,

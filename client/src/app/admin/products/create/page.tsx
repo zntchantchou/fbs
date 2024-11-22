@@ -12,6 +12,9 @@ type ProductForm = {
   stockQuantity?: number;
   pictures: ImageListType | null;
   category: string | null;
+  brand: string | null;
+  description: string | null;
+  model: string | null;
 };
 
 const initialForm: ProductForm = {
@@ -20,6 +23,9 @@ const initialForm: ProductForm = {
   stockQuantity: 0,
   pictures: null,
   category: "4 strings",
+  brand: null,
+  description: null,
+  model: null,
 };
 
 function CreateProduct() {
@@ -61,16 +67,21 @@ function CreateProduct() {
       !formData.price ||
       !formData.stockQuantity ||
       (formData.pictures && formData?.pictures?.length < 1) ||
-      !formData.category
+      !formData.category ||
+      !formData.description ||
+      !formData.model ||
+      !formData.brand
     ) {
       console.error("VALIDATION ERROR: ");
       return;
     }
     const requestData = new FormData();
-    if (formData.name) {
-      requestData.set("name", formData.name as string);
-    }
+
+    requestData.set("name", formData.name as string);
     requestData.set("price", formData.price?.toString() as string);
+    requestData.set("description", formData.description as string);
+    requestData.set("model", formData.model as string);
+    requestData.set("brand", formData.brand as string);
     requestData.set(
       "stockQuantity",
       formData.stockQuantity?.toString() as string
@@ -94,7 +105,7 @@ function CreateProduct() {
     }
   };
 
-  const labelClassnames = "block my-3 text-sm font-medium text-gray-700";
+  const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
   const inputClassnames =
     "block w-full max-w-2xl border-gray-400 border-2 rounded-md mb-4 mt-2 p-2";
 
@@ -106,7 +117,7 @@ function CreateProduct() {
         <div className="w-5/6 lg:w-full md:flex-col md:items-center mt-4">
           <Header name="Create a product" />
           {/* PRODUCT NAME */}
-          <label htmlFor="productName" className={labelClassnames}>
+          <label htmlFor="name" className={labelClassnames}>
             Product Name
           </label>
           <input
@@ -117,7 +128,43 @@ function CreateProduct() {
             value={formData?.name || ""}
             className={inputClassnames}
           />
-          <label htmlFor="productPrice" className={labelClassnames}>
+          {/* BRAND */}
+          <label htmlFor="brand" className={labelClassnames}>
+            Brand
+          </label>
+          <input
+            type="text"
+            name="brand"
+            placeholder="brand"
+            onChange={handleChange}
+            value={formData?.brand || ""}
+            className={inputClassnames}
+          />
+          {/* MODEL */}
+          <label htmlFor="model" className={labelClassnames}>
+            Model
+          </label>
+          <input
+            type="text"
+            name="model"
+            placeholder="model"
+            onChange={handleChange}
+            value={formData?.model || ""}
+            className={inputClassnames}
+          />
+          {/* DESCRIPTION */}
+          <label htmlFor="description" className={labelClassnames}>
+            Description
+          </label>
+          <input
+            type="text"
+            name="description"
+            placeholder="description"
+            onChange={handleChange}
+            value={formData?.description || ""}
+            className={inputClassnames}
+          />
+          <label htmlFor="price" className={labelClassnames}>
             Price
           </label>
           {/* PRICE */}

@@ -8,6 +8,9 @@ export interface NewProductData {
   price: number;
   stockQuantity: number;
   categoryName: string;
+  brand: string;
+  description: string;
+  model: string;
   pictures: { url: string; index: number }[];
 }
 
@@ -18,6 +21,9 @@ class ProductService {
     stockQuantity,
     categoryName,
     pictures,
+    brand,
+    description,
+    model,
   }: NewProductData) {
     const category = await CategoryService.getCategoryByName(categoryName);
     if (!category)
@@ -29,6 +35,9 @@ class ProductService {
       data: {
         name: name,
         price: price,
+        brand: brand,
+        description: description,
+        model: model,
         categoryId: category.id,
         stockQuantity: stockQuantity,
         productPicture: { create: [...pictures] },

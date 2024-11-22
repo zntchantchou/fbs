@@ -1,22 +1,37 @@
+TODAY:
+  MODELS:
+    product: 
+      ☐ add 'description' field FE
+      ☐ add 'description' field BE
+      ☐ add 'Brand' field to front-end
+      ☐ add 'Brand' field to back-end
+      ☐ adds userId to product
+  Input validation: 
+    ☐ Add validation middleware in BE
+    ☐ Add form validation library FE
+
 Api actions needed:
   Cart:
     ☐ create-cart
     ☐ add-to-cart
     ☐ delete-from-cart
-  Category:
-    ✔ get categories @done(24-11-19 15:41)
-  Order:
+    Order:
     ☐ Create an order (by paying)
-  Products:
-    ✔ get products (to view) @done(24-11-19 15:41)
+    Products:  
+      ☐ publish
+      ☐ unpublish
+      ☐ Product page
+      ☐ Redirect to product page after successful creation
+    UserSettings:
+      ☐ update settings
+    SalesSummary: 
+      ☐ get last month
+      ☐ get by date range
+
+  DONE:
+    ✔ get categories @done(24-11-19 15:41)
+    ✔ get products (to view) @done(24-11-21 23:32)
+    ✔ adds product pictures to getProducts
     ✔ search products (by search term) @done(24-11-19 15:46)
-    ☐ create product
-    ☐ update product
-    ☐ publish
-    ☐ unpublish
-  UserSettings:
-    ☐ update settings
-  SalesSummary: 
-    ☐ get last month
-    ☐ get by date range
-  
+    ✔ create product @done(24-11-21 23:28)
+    ✔ upload product pictures to s3@done(24-11-21 23:28) 

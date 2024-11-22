@@ -4,14 +4,16 @@ import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSidebarCollapsed } from "@/state";
 import {
   Archive,
+  CircleChevronLeftIcon,
   CircleDollarSign,
   Clipboard,
   Layout,
   LucideIcon,
-  Menu,
   SlidersHorizontal,
   User,
 } from "lucide-react";
+import BassIcon from "@/assets/bass.svg";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -59,7 +61,7 @@ function Sidebar() {
   };
 
   const sidebarClassnames = `fixed flex flex-col ${
-    isSidebarCollapsed ? "w-0 md:w-16" : "w-72 md:w-64"
+    isSidebarCollapsed ? "w-0 md:w-16" : "w-full sm:w-64"
   } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
   return (
     <div className={sidebarClassnames}>
@@ -69,20 +71,22 @@ function Sidebar() {
           isSidebarCollapsed ? "px-5" : "px-8"
         }`}
       >
-        <div>logo</div>
+        <Image src={BassIcon} alt="website icon" height={50} />
         <h1
           className={`${
             isSidebarCollapsed ? "hidden" : "block"
           } font-extrabold text-2xl`}
         >
-          inventor
+          Buy Basses
         </h1>
-        <button
-          className="md:hidden px-3 py-3 bg-gray-100 rounded-full hover:bg-blue-100"
-          onClick={toggleSidebar}
-        >
-          <Menu className="w-4 h-4" />
-        </button>
+        {!isSidebarCollapsed && (
+          <button
+            className="px-3 py-3 bg-gray-100 rounded-full hover:bg-blue-100"
+            onClick={toggleSidebar}
+          >
+            <CircleChevronLeftIcon className="w-6 h-6" />
+          </button>
+        )}
       </div>
 
       {/* MENU ITEMS */}

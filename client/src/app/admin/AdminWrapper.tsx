@@ -10,7 +10,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
     (state) => state.global.isSidebarCollapsed
   );
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
-  const mainPaddingLeft = isSidebarCollapsed ? "md:pl-24" : "md:pl-72";
+  const mainPaddingLeft = isSidebarCollapsed ? "md:pl-24" : "pl-72";
 
   useEffect(() => {
     if (isDarkMode) {
