@@ -1,8 +1,5 @@
 "use client";
-import PopularProducts from "@/app/admin/cards/PopularProducts";
-import PurchaseSummary from "@/app/admin/cards/PurchaseSummary";
-import SalesSummary from "@/app/admin/cards/SalesSummary";
-import ExpenseSummary from "@/app/admin/cards/ExpenseSummary";
+
 import StatCard from "./cards/Stats";
 import {
   CheckCircle,
@@ -16,10 +13,6 @@ import {
 export default function AdminPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:overflow-auto gap-10 pb-4 custom-grid-rows">
-      <PopularProducts />
-      <SalesSummary />
-      <PurchaseSummary />
-      <ExpenseSummary />
       <StatCard
         title="Customer and expenses"
         primaryIcon={<Package className="text-blue-600 w-6 h-6" />}

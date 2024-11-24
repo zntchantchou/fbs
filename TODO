@@ -1,15 +1,16 @@
 TODAY:
   MODELS:
     product: 
-      ☐ add 'description' field FE
-      ☐ add 'description' field BE
-      ☐ add 'Brand' field to front-end
-      ☐ add 'Brand' field to back-end
+      ✔ add 'description' field FE @done(24-11-22 16:20)
+      ✔ add 'description' field BE @done(24-11-22 16:20)
+      ✔ add 'model' field FE @done(24-11-22 16:20)
+      ✔ add 'model' field BE @done(24-11-22 16:20)
+      ✔ add 'Brand' field to front-end @done(24-11-22 16:20)
+      ✔ add 'Brand' field to back-end @done(24-11-22 16:20)
       ☐ adds userId to product
   Input validation: 
     ☐ Add validation middleware in BE
     ☐ Add form validation library FE
-
 Api actions needed:
   Cart:
     ☐ create-cart
