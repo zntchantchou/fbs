@@ -1,8 +1,7 @@
 import { InputHTMLAttributes } from "react";
 import { FieldErrors, RegisterOptions } from "react-hook-form";
-import { FormValues } from "../../components.types";
+import { FormValues } from "@/app/(components)/components.types";
 import ValidationError from "../ValidationError/ValidationError";
-// import { FormValues } from "@/app/(components)/components.types";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -16,7 +15,6 @@ function Input({ register, label, registerOptions, errors, ...rest }: Props) {
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
   const inputClassnames =
     "block w-full max-w-2xl border-gray-400 border-2 rounded-md mb-4 mt-2 p-2";
-  console.log("my name is ", rest.name);
   return (
     <>
       <label className={labelClassnames}>{label}</label>

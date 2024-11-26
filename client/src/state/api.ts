@@ -2,13 +2,25 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "@/app/redux";
 import { ImageListType } from "react-images-uploading";
 export interface Product {
-  productId: string;
+  id: string;
+  category: string;
+  description: string;
   name: string;
   price: number;
   rating?: number;
+  model: string;
+  brand: string;
+  pictures: ProductPicture[];
   stockQuantity: number;
 }
 
+export interface ProductPicture {
+  id: string;
+  index: number;
+  productId: string;
+  url: string;
+  filename: string;
+}
 export interface User {
   name: string;
   email: string;
@@ -59,6 +71,12 @@ export const api = createApi({
       }),
       providesTags: ["Products"],
     }),
+    getProductById: build.query<Product, string>({
+      query: (productId) => ({
+        url: "/products/" + productId,
+      }),
+      providesTags: ["Products"],
+    }),
     getCategories: build.query<Category[], string | void>({
       query: () => ({
         url: "/categories",
@@ -75,11 +93,26 @@ export const api = createApi({
       },
       invalidatesTags: ["Products"],
     }),
+    editProduct: build.mutation<
+      Product,
+      { updatedProduct: FormData; productId: string }
+    >({
+      query: ({ updatedProduct, productId }) => {
+        return {
+          method: "PATCH",
+          url: "products/" + productId,
+          body: updatedProduct,
+        };
+      },
+      invalidatesTags: ["Products"],
+    }),
   }),
 });
 
 export const {
   useGetProductsQuery,
+  useGetProductByIdQuery,
+  useEditProductMutation,
   useGetCategoriesQuery,
   useCreateProductMutation,
 } = api;

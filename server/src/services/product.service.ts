@@ -11,7 +11,8 @@ export interface NewProductData {
   brand: string;
   description: string;
   model: string;
-  pictures: { url: string; index: number }[];
+  userId: string;
+  pictures: { url: string; index: number; filename: string }[];
 }
 
 class ProductService {
@@ -24,6 +25,7 @@ class ProductService {
     brand,
     description,
     model,
+    userId,
   }: NewProductData) {
     const category = await CategoryService.getCategoryByName(categoryName);
     if (!category)
@@ -37,10 +39,11 @@ class ProductService {
         price: price,
         brand: brand,
         description: description,
+        userId: userId,
         model: model,
         categoryId: category.id,
         stockQuantity: stockQuantity,
-        productPicture: { create: [...pictures] },
+        pictures: { create: [...pictures] },
       },
     });
   }

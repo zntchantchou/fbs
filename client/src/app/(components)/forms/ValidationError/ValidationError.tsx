@@ -79,7 +79,7 @@ function ValidationError({ fieldName, errors, options, label }: Props) {
   }, [error, updateValidation]);
 
   return errorMessage || label ? (
-    <div className="bg-red-200 rounded p-4 text-red-700">
+    <div className="bg-red-200 rounded p-4 text-red-700 max-w-2xl mb-2">
       {errorMessage || label}
     </div>
   ) : null;

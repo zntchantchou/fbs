@@ -1,29 +1,46 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
-
+import UploaderItem from "./UploaderItem";
 type UploaderProps = {
   imageGalleryMaxHeight?: string;
   onUpdate: (images: ImageListType) => void;
+  pictures?: StoredPicture[];
+};
+type StoredPicture = {
+  url: string;
+  filename: string;
+  index: number;
+  delete?: boolean;
 };
 
-function Uploader({ imageGalleryMaxHeight, onUpdate }: UploaderProps) {
+function Uploader({
+  imageGalleryMaxHeight,
+  onUpdate,
+  pictures,
+}: UploaderProps) {
   const [images, setImages] = useState<ImageListType>([]);
-
+  const [existingImages, setExistingImages] =
+    useState<StoredPicture[]>(pictures);
   const maxNumber = 5;
   const imageGalleryMaxHeightCss = imageGalleryMaxHeight
     ? `max-h-[${imageGalleryMaxHeight}]`
     : "";
-
-  const onChange = async (
-    imageList: ImageListType,
-    addUpdateIndex: number[] | undefined
-  ) => {
+  const filteredExistingImages = existingImages.filter((img) => !img.delete);
+  const onChange = async (imageList: ImageListType) => {
     console.log("ONCHANGE --------- \n");
     setImages(imageList);
     onUpdate(imageList);
+  };
+
+  const onRemoveExistingImage = (index: number) => {
+    console.log("On remove existing ", index);
+    const updatedImages = existingImages.map((img) => {
+      if (img.index === index) return { ...img, delete: true };
+      return img;
+    });
+    setExistingImages(updatedImages);
   };
 
   // const uploadedImages = (images: ImageListType) => {
@@ -35,6 +52,11 @@ function Uploader({ imageGalleryMaxHeight, onUpdate }: UploaderProps) {
   //     ) : null;
   //   });
   // };
+  // useEffect(() => {
+  //   if(pictures && pictures.length > 0 && existingImages.length === 0) {
+
+  //   }
+  // }, [pictures]);
 
   // DROP ZONE
   return (
@@ -75,44 +97,30 @@ function Uploader({ imageGalleryMaxHeight, onUpdate }: UploaderProps) {
             <div
               className={`w-full overflow-y-auto bg-slate-50 max-w-2xl ${imageGalleryMaxHeightCss}`}
             >
+              {/* EXISTING (STORED) IMAGES */}
+              {filteredExistingImages &&
+                filteredExistingImages.length > 0 &&
+                filteredExistingImages.map((p) => (
+                  <UploaderItem
+                    onRemove={onRemoveExistingImage}
+                    src={p.url}
+                    key={p.filename}
+                    filename={p.filename}
+                    index={p.index}
+                  />
+                ))}
+              {/* NEWLY ADDED IMAGES */}
               {imageList.map((image, index) => {
-                return image.dataString ? (
-                  <div
-                    key={index}
-                    className="mb-4 border-gray-400 border-2 rounded-md p-2 w-full h-32 md:max-w-2xl flex"
-                  >
-                    <Image
-                      src={image.dataString}
-                      width={70}
-                      height={70}
-                      alt="uploaded image of the product"
-                    />
-                    {/* image controls */}
-                    <div className="w-full h-full px-3">
-                      <div className="w-full h-1/3 flex justify-between items-center px-2">
-                        <p className="max-w-2xl text-gray-600">
-                          Picture {index} : {image.file?.name}
-                        </p>
-                      </div>
-                      <div className="w-full h-2/3 flex items-center justify-start px-2 mr-6">
-                        <button
-                          type="submit"
-                          className="mb-4 mr-2 py-2 px-6 h-10 flex items-center justify-center bg-blue-500 text-white rounded hover:bg-blue-700"
-                          onClick={() => onImageUpdate(index)}
-                        >
-                          Update
-                        </button>
-                        <button
-                          type="submit"
-                          className="mb-4 py-4 px-6 h-10 flex items-center justify-center bg-red-500 text-white rounded hover:bg-red-700"
-                          onClick={() => onImageRemove(index)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : null;
+                return (
+                  <UploaderItem
+                    src={image.dataString}
+                    filename={image.file.name}
+                    index={index}
+                    onRemove={onImageRemove}
+                    onUpdate={onImageUpdate}
+                    key={image.file.name}
+                  />
+                );
               })}
             </div>
             <button onClick={onImageRemoveAll}></button>

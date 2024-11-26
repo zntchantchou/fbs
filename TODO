@@ -7,7 +7,9 @@ TODAY:
       ✔ add 'model' field BE @done(24-11-22 16:20)
       ✔ add 'Brand' field to front-end @done(24-11-22 16:20)
       ✔ add 'Brand' field to back-end @done(24-11-22 16:20)
-      ☐ adds userId to product
+      ✔ add 'unique' constrain to field to field name
+      ✔ adds userId to product @done(24-11-26 14:13)
+      ☐ handle same name already exists in front-end
   Input validation: 
     ☐ Add validation middleware in BE
     ☐ Add form validation library FE

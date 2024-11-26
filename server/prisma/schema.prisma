@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -24,7 +25,7 @@ model Cart {
   userId    String
   darkmode  Boolean
   items     CartItem[]
-  timestamp DateTime
+  timestamp DateTime   @default(now())
 }
 
 model Category {
@@ -45,19 +46,21 @@ model CartItem {
 }
 
 model Product {
-  id             String           @id @default(uuid())
-  name           String
-  price          Float
-  stockQuantity  Int
-  description    String
-  model          String
-  brand          String
-  productPicture ProductPicture[]
-  cartItem       CartItem[]
-  category       Category         @relation(fields: [categoryId], references: [id])
-  categoryId     String
-  summaries      ProductSummary[]
-  orderItems     OrderItem[]
+  id            String           @id @default(uuid())
+  name          String           @unique
+  userId        String
+  price         Float
+  stockQuantity Int
+  description   String
+  timestamp     DateTime         @default(now())
+  model         String
+  brand         String
+  pictures      ProductPicture[]
+  cartItem      CartItem[]
+  category      Category         @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  summaries     ProductSummary[]
+  orderItems    OrderItem[]
 }
 
 model OrderItem {
@@ -74,7 +77,7 @@ model Order {
   id          String      @id @default(uuid())
   userId      String
   items       OrderItem[]
-  timestamp   DateTime
+  timestamp   DateTime    @default(now())
   totalAmount Float
 }
 
@@ -83,12 +86,13 @@ model ProductPicture {
   productId String
   product   Product @relation(fields: [productId], references: [id])
   url       String
+  filename  String
   index     Int
 }
 
 model ProductSummary {
   id                String   @id @default(uuid())
-  timestamp         DateTime
+  timestamp         DateTime @default(now())
   productId         String
   product           Product  @relation(fields: [productId], references: [id])
   addedToCartCount  Int

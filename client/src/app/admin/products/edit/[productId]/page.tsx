@@ -5,26 +5,31 @@ import Header from "@/app/(components)/Header";
 import Input from "@/app/(components)/forms/Input/Input";
 import TextArea from "@/app/(components)/forms/TextArea/TextArea";
 import Uploader from "@/app/(components)/Uploader";
-import { useCreateProductMutation, useGetCategoriesQuery } from "@/state/api";
-import { useState } from "react";
+import {
+  Product,
+  ProductPicture,
+  useGetCategoriesQuery,
+  useGetProductByIdQuery,
+  // useGetProductByIdQuery,
+} from "@/state/api";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ImageListType } from "react-images-uploading";
 import ValidationError from "@/app/(components)/forms/ValidationError/ValidationError";
-import { useRouter } from "next/navigation";
 
-interface ProductForm extends FormValues {
+interface ProductForm extends FormValues, Product {
   price: number;
   name: string;
   stockQuantity: number;
-  pictures: ImageListType;
+  pictures: ProductPicture[];
   category: string;
   brand: string;
   description: string;
   model: string;
 }
 
-const initialFormValues: ProductForm = {
-  price: 0,
+const emptyFormValues: ProductForm = {
+  price: 10,
   name: "",
   stockQuantity: 0,
   pictures: [],
@@ -34,25 +39,27 @@ const initialFormValues: ProductForm = {
   model: "",
 };
 
-function CreateProduct() {
+type Props = {
+  params: { productId: string };
+};
+
+function EditProduct({ params }: Props) {
   const [pictures, setPictures] = useState<ImageListType>([]);
+  const [initialFormState, _] = useState(emptyFormValues);
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
-  const [
-    createProduct,
-    { data: createProductData, error: createProductError },
-  ] = useCreateProductMutation();
-  const router = useRouter();
-  const { register, handleSubmit, formState } = useForm<ProductForm>({
-    defaultValues: initialFormValues,
+
+  console.log("SLUG IS: ", params);
+  const {
+    data: productData,
+    error: productError,
+    isLoading: productLoading,
+  } = useGetProductByIdQuery(params.productId);
+
+  const { register, handleSubmit, formState, setValue } = useForm<ProductForm>({
+    defaultValues: initialFormState,
     mode: "onChange",
   });
   const onSubmit: SubmitHandler<ProductForm> = async (formValues) => {
-    console.log(
-      "ON SUBMIT formState: \n ",
-      formState.isValid,
-      formState.errors,
-      pictures
-    );
     if (!formState.isValid || !pictures.length) return;
     const requestData = new FormData();
     requestData.set("name", formValues.name);
@@ -74,13 +81,21 @@ function CreateProduct() {
         }
       }
       console.log("REQUEST DATA pic 1: ", requestData.get("pictures"));
-      const created = await createProduct(requestData);
-      if (created) {
-        console.log("Product has been created: ", created);
-        router.push("/admin/products/edit/" + created.data.id);
-      }
+      // const created = await roduct(requestData);
+      // if (created) {
+      //   console.log("Product has been created: ", created);
+      // }
     }
   };
+
+  useEffect(() => {
+    if (productData) {
+      const keys = Object.keys(emptyFormValues);
+      for (const key of keys) {
+        setValue(key, productData[key]);
+      }
+    }
+  }, [productData, setValue]);
 
   const {
     data: categories,
@@ -95,9 +110,11 @@ function CreateProduct() {
   const updateImages = (images: ImageListType) => {
     setPictures(images);
   };
-  if (createProductError) {
-    return <p>{createProductError && "error"}</p>;
+
+  if (!productData || !Object.values(productData).length) {
+    return <div>Could not access product</div>;
   }
+  console.log("productData : ", productData);
   return (
     <div className="w-full h-full flex justify-center min-w-[300px]">
       <div className="w-full md:w-3/5 xl:w-2/5 flex flex-col items-center md:flex md:flex-col md:items-center text-start">
@@ -106,7 +123,7 @@ function CreateProduct() {
           className="w-5/6 lg:w-full md:flex-col md:items-center mt-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Header name="Create a product" />
+          <Header name="Edit a product" />
           {/* PRODUCT NAME */}
           <Input
             errors={formState.errors}
@@ -191,23 +208,25 @@ function CreateProduct() {
           <label htmlFor="Pictures" className={labelClassnames}>
             Pictures
           </label>
-          {pictures.length < 1 && formState.isSubmitted && (
+          {/* DROP ZONE */}
+          <Uploader
+            imageGalleryMaxHeight="200px"
+            onUpdate={updateImages}
+            pictures={productData.pictures}
+          />
+
+          {/* {pictures.length < 1 && formState.isSubmitted && (
             <ValidationError
               fieldName="pictures"
               label="Please upload at least one picture"
             />
-          )}
-          {/* DROP ZONE */}
-          <Uploader imageGalleryMaxHeight="200px" onUpdate={updateImages} />
+          )} */}
           <div className="flex flex-col md:flex-row max-w-2xl">
             <button
               className="py-3 px-6 bg-green-700 text-white rounded hover:bg-green-900"
               type="submit"
             >
-              Create
-            </button>
-            <button className="mt-2 md:mt-0 md:ml-2 py-3 px-8 bg-red-500 text-white rounded hover:bg-red-700">
-              Reset
+              Save
             </button>
           </div>
         </form>
@@ -216,4 +235,4 @@ function CreateProduct() {
     </div>
   );
 }
-export default CreateProduct;
+export default EditProduct;

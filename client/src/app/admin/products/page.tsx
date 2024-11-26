@@ -22,7 +22,10 @@ function Products() {
   };
   // await createProduct(productData);
 
-  const productsList = products?.map((product) => {
+  if (!products) return <div>No products</div>;
+  console.log("products", products, Array.isArray(products));
+  let productsList = [];
+  productsList = products?.map((product) => {
     const rating = product.rating ? (
       <div className="flex items-center mt-2">
         <Rating rating={product.rating} />
@@ -30,7 +33,7 @@ function Products() {
     ) : null;
     return (
       <div
-        key={product.productId}
+        key={product.id}
         className="border shadow rounded-md p-4 max-w-full w-full mx-auto"
       >
         <div className="flex flex-col items-center">

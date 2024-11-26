@@ -18,12 +18,41 @@ export const getProducts = async (
           contains: search,
         },
       },
-      include: { productPicture: true },
+      include: { pictures: true },
     });
     res.status(200).json(products);
     return;
   } catch (error) {
     console.log("[GET PRODUCTS] error", error);
+  }
+};
+
+export const getProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400).json({ message: "No id was provided" });
+      return;
+    }
+    const product = await prisma.product.findUnique({
+      where: {
+        id: id,
+      },
+      include: { pictures: true, category: true },
+    });
+
+    const formattedProduct = { ...product };
+    const formattedCategory = { ...product?.category };
+    delete formattedProduct.categoryId;
+    res
+      .status(200)
+      .json({ ...formattedProduct, category: formattedCategory.name });
+    return;
+  } catch (error) {
+    console.log("[GET PRODUCT] error: \n", error);
   }
 };
 
@@ -59,14 +88,15 @@ export const createProduct = async (
       brand: req.body.brand,
       description: req.body.description,
       model: req.body.model,
+      userId: req.user?.uid as string,
       pictures: savedFiles.map((picture, index) => ({
+        filename: picture.Key?.replace(/[a-zA-Z0-9]\//, "") as string,
         url: picture.Location as string,
         index,
       })),
     };
     const savedProduct = await ProductService.saveProduct(productData);
-    const { id, ...responseData } = savedProduct;
-    res.status(201).json({ ...responseData, totalPictures: savedFiles.length });
+    res.status(201).json({ ...savedProduct, totalPictures: savedFiles.length });
   } catch (error) {
     console.log("ERROR : \n", error);
   }

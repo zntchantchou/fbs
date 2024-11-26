@@ -5,13 +5,11 @@ import Image from "next/image";
 import BassIcon from "@/assets/bass.svg";
 import GoogleIcon from "@/assets/google.png";
 import { useRouter } from "next/navigation";
-import { auth } from "firebaseui";
 import { AuthenticationService } from "@/auth/auth-service";
 import { setToken } from "@/state/auth";
 import { useAppDispatch } from "@/app/redux";
 
 function Login() {
-  console.log("AUTH: ", auth);
   console.log("FirebaseAuth: ", AuthenticationService.firebaseAuth);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -21,7 +19,7 @@ function Login() {
       if (credentials) {
         const token = await credentials.user.getIdToken();
         if (token) dispatch(setToken(token));
-        router.push("/admin/expenses");
+        router.push("/admin/products");
       } else {
         router.push("/login");
       }
