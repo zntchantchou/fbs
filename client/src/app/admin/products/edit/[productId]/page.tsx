@@ -1,6 +1,6 @@
 "use client";
 
-import { FormValues } from "@/app/(components)/components.types";
+import { FormValues, StoredPicture } from "@/app/(components)/components.types";
 import Header from "@/app/(components)/Header";
 import Input from "@/app/(components)/forms/Input/Input";
 import TextArea from "@/app/(components)/forms/TextArea/TextArea";
@@ -45,6 +45,7 @@ type Props = {
 
 function EditProduct({ params }: Props) {
   const [pictures, setPictures] = useState<ImageListType>([]);
+  const [existingImages, setExistingImages] = useState<StoredPicture[]>([]);
   const [initialFormState, _] = useState(emptyFormValues);
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
 
@@ -109,6 +110,9 @@ function EditProduct({ params }: Props) {
 
   const updateImages = (images: ImageListType) => {
     setPictures(images);
+  };
+  const updateStoredImages = (images: StoredPicture[]) => {
+    setExistingImages(images);
   };
 
   if (!productData || !Object.values(productData).length) {
@@ -212,6 +216,7 @@ function EditProduct({ params }: Props) {
           <Uploader
             imageGalleryMaxHeight="200px"
             onUpdate={updateImages}
+            onUpdateStoredPictures={updateStoredImages}
             pictures={productData.pictures}
           />
 

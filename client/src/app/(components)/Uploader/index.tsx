@@ -1,23 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
 import UploaderItem from "./UploaderItem";
+import { StoredPicture } from "../components.types";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 type UploaderProps = {
   imageGalleryMaxHeight?: string;
   onUpdate: (images: ImageListType) => void;
+  onUpdateStoredPictures?: (images: StoredPicture[]) => void;
   pictures?: StoredPicture[];
 };
-type StoredPicture = {
-  url: string;
-  filename: string;
-  index: number;
-  delete?: boolean;
-};
+
+// CREATE A COMMON TYPE
 
 function Uploader({
   imageGalleryMaxHeight,
   onUpdate,
+  onUpdateStoredPictures,
   pictures,
 }: UploaderProps) {
   const [images, setImages] = useState<ImageListType>([]);
@@ -27,7 +28,10 @@ function Uploader({
   const imageGalleryMaxHeightCss = imageGalleryMaxHeight
     ? `max-h-[${imageGalleryMaxHeight}]`
     : "";
-  const filteredExistingImages = existingImages.filter((img) => !img.delete);
+  const filteredExistingImages =
+    existingImages && existingImages.length
+      ? existingImages.filter((img) => !img.delete)
+      : [];
   const onChange = async (imageList: ImageListType) => {
     console.log("ONCHANGE --------- \n");
     setImages(imageList);
@@ -41,6 +45,8 @@ function Uploader({
       return img;
     });
     setExistingImages(updatedImages);
+    // hoist deleted images to parent for deletion
+    onUpdateStoredPictures(updatedImages);
   };
 
   // const uploadedImages = (images: ImageListType) => {
@@ -94,35 +100,39 @@ function Uploader({
             >
               Remove all
             </button>
-            <div
-              className={`w-full overflow-y-auto bg-slate-50 max-w-2xl ${imageGalleryMaxHeightCss}`}
-            >
-              {/* EXISTING (STORED) IMAGES */}
-              {filteredExistingImages &&
-                filteredExistingImages.length > 0 &&
-                filteredExistingImages.map((p) => (
-                  <UploaderItem
-                    onRemove={onRemoveExistingImage}
-                    src={p.url}
-                    key={p.filename}
-                    filename={p.filename}
-                    index={p.index}
-                  />
-                ))}
-              {/* NEWLY ADDED IMAGES */}
-              {imageList.map((image, index) => {
-                return (
-                  <UploaderItem
-                    src={image.dataString}
-                    filename={image.file.name}
-                    index={index}
-                    onRemove={onImageRemove}
-                    onUpdate={onImageUpdate}
-                    key={image.file.name}
-                  />
-                );
-              })}
-            </div>
+            <DndProvider backend={HTML5Backend}>
+              <div
+                className={`w-full overflow-y-auto max-w-2xl ${imageGalleryMaxHeightCss}`}
+              >
+                {/* EXISTING (STORED) IMAGES */}
+                {filteredExistingImages &&
+                  filteredExistingImages.length > 0 &&
+                  filteredExistingImages.map((p) => (
+                    <UploaderItem
+                      onRemove={onRemoveExistingImage}
+                      src={p.url}
+                      key={p.filename}
+                      filename={p.filename}
+                      index={p.index}
+                    />
+                  ))}
+                {/* NEWLY ADDED IMAGES */}
+                {/* Always sorted by chronological order. Needs another array with correct indexes */}
+                {imageList.map((image, index) => {
+                  return (
+                    <UploaderItem
+                      src={image.dataString}
+                      filename={image.file.name}
+                      index={index + filteredExistingImages.length}
+                      onRemove={onImageRemove}
+                      onUpdate={onImageUpdate}
+                      key={image.file.name}
+                    />
+                  );
+                })}
+              </div>
+            </DndProvider>
+
             <button onClick={onImageRemoveAll}></button>
           </div>
         )}

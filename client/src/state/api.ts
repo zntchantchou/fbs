@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "@/app/redux";
 import { ImageListType } from "react-images-uploading";
 export interface Product {
-  id: string;
+  id?: string;
   category: string;
   description: string;
   name: string;

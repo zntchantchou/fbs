@@ -19,6 +19,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.add("light");
     }
   });
+  // const contentWidth = isSidebarCollapsed ? "w-[100vw] md:w-16" : "w-[100vw] sm:w-64";
   return (
     <div
       className={`${
@@ -26,12 +27,14 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
       } flex bg-gray-50 text-gray-900 w-full min-h-screen`}
     >
       <Sidebar></Sidebar>
-      <main
-        className={`flex flex-col w-full py-7 px-9 md:pl-32 bg-gray-100 ${mainPaddingLeft}`}
-      >
+      <div className="h-[100vh] w-full">
         <Navbar></Navbar>
-        {children}
-      </main>
+        <main
+          className={`flex flex-col py-7 px-9 md:pl-32 h-[94vh] overflow-auto ${mainPaddingLeft}`}
+        >
+          <div>{children}</div>
+        </main>
+      </div>
     </div>
   );
 }

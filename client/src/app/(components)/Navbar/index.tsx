@@ -18,7 +18,9 @@ function Navbar() {
   };
 
   return (
-    <div className={`flex justify-between items-center w-full mb-7`}>
+    <div
+      className={`flex justify-between items-center w-full h-[6vh] px-4 border-b-2 border-b-gray-200`}
+    >
       {/* LEFT SIDE */}
       <div className="flex justify-between items-center gap-5">
         <button
