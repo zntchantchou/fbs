@@ -4,16 +4,11 @@ export type FormValues = {
   [index: string]: string | number | ImageListType;
 };
 
-export type StoredPicture = {
-  url: string;
-  filename: string;
-  index: number;
-  delete?: boolean;
-};
-
 export interface PictureDragItem {
   index: number;
-  id: string;
-  srcUrl: string;
+  id?: string;
+  url: string;
   filename: string;
 }
+
+export interface StoredPicture extends PictureDragItem {}

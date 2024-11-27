@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import ImageUploading, { ImageListType } from "react-images-uploading";
+import ImageUploading, {
+  ImageListType,
+  ImageType,
+} from "react-images-uploading";
 import UploaderItem from "./UploaderItem";
-import { StoredPicture } from "../components.types";
+import { PictureDragItem, StoredPicture } from "../components.types";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useState } from "react";
 
 type UploaderProps = {
   imageGalleryMaxHeight?: string;
@@ -14,62 +17,73 @@ type UploaderProps = {
   pictures?: StoredPicture[];
 };
 
-// CREATE A COMMON TYPE
-
 function Uploader({
   imageGalleryMaxHeight,
   onUpdate,
-  onUpdateStoredPictures,
-  pictures,
+  pictures = [],
 }: UploaderProps) {
   const [images, setImages] = useState<ImageListType>([]);
-  const [existingImages, setExistingImages] =
-    useState<StoredPicture[]>(pictures);
-  const maxNumber = 5;
+
+  const convertImageToPictureDragItem = (
+    image: ImageType,
+    index: number
+  ): PictureDragItem => {
+    return {
+      url: image.url,
+      filename: image.file.name,
+      id: null,
+      index,
+    };
+  };
+  const [dragItems, setDragItems] = useState<PictureDragItem[]>(pictures);
+  const maxNumber = 15;
   const imageGalleryMaxHeightCss = imageGalleryMaxHeight
     ? `max-h-[${imageGalleryMaxHeight}]`
     : "";
-  const filteredExistingImages =
-    existingImages && existingImages.length
-      ? existingImages.filter((img) => !img.delete)
-      : [];
-  const onChange = async (imageList: ImageListType) => {
-    console.log("ONCHANGE --------- \n");
+
+  const onChange = async (
+    imageList: ImageListType,
+    updatedIndexes: number[]
+  ) => {
+    if (Array.isArray(updatedIndexes) && !isNaN(updatedIndexes[0])) {
+      // add one or more items to the actual list of draggable items
+      setDragItems([
+        ...dragItems,
+        ...imageList
+          .slice(-1 * updatedIndexes.length)
+          .map((img, index) =>
+            convertImageToPictureDragItem(img, dragItems.length - 1 + index)
+          ),
+      ]);
+    }
+    console.log("added more than one; ", updatedIndexes);
     setImages(imageList);
     onUpdate(imageList);
   };
 
-  const movePicture = (dragIndex: number, filename: string) => {
-    console.log("movePicture : dragIndex ", dragIndex);
-    // console.log("movePicture : hoverIndex ", hoverIndex);
+  const movePicture = (fromIndex: number, toIndex: number) => {
+    setDragItems(
+      dragItems.map((item) => {
+        if (item.index === toIndex) return { ...item, index: fromIndex };
+        if (item.index === fromIndex) return { ...item, index: toIndex };
+        return item;
+      })
+    );
+    console.log("updatedItems : ", dragItems);
   };
 
-  const onRemoveExistingImage = (index: number) => {
-    console.log("On remove existing ", index);
-    const updatedImages = existingImages.map((img) => {
-      if (img.index === index) return { ...img, delete: true };
-      return img;
-    });
-    setExistingImages(updatedImages);
-    // hoist deleted images to parent for deletion
-    onUpdateStoredPictures(updatedImages);
+  const onImageDelete = (index: number) => {
+    setDragItems(
+      [...dragItems]
+        .filter((item) => item.index !== index)
+        // make sure indexes are always in sync as we delete by index
+        .map((item, index) => ({ ...item, index }))
+    );
   };
 
-  // const uploadedImages = (images: ImageListType) => {
-  //   return images.map((image, index) => {
-  //     return image.dataURL ? (
-  //       <div key={index}>
-  //         <Image src={image.dataURL} alt="uploaded image of the product" />
-  //       </div>
-  //     ) : null;
-  //   });
-  // };
-  // useEffect(() => {
-  //   if(pictures && pictures.length > 0 && existingImages.length === 0) {
-
-  //   }
-  // }, [pictures]);
-
+  const onDeleteAll = () => {
+    setDragItems([]);
+  };
   // DROP ZONE
   return (
     <>
@@ -78,17 +92,9 @@ function Uploader({
         value={images}
         onChange={onChange}
         maxNumber={maxNumber}
-        dataURLKey="dataString"
+        dataURLKey="url"
       >
-        {({
-          imageList,
-          onImageUpload,
-          onImageRemoveAll,
-          onImageRemove,
-          onImageUpdate,
-          isDragging,
-          dragProps,
-        }) => (
+        {({ onImageUpload, onImageRemoveAll, isDragging, dragProps }) => (
           <div>
             <div
               onClick={onImageUpload}
@@ -102,44 +108,30 @@ function Uploader({
             <button
               type="submit"
               className="mb-4 py-2 px-4 bg-gray-400 text-white rounded hover:bg-gray-600"
-              onClick={onImageRemoveAll}
+              onClick={onDeleteAll}
             >
               Remove all
             </button>
             <DndProvider backend={HTML5Backend}>
               <div
-                className={`w-full overflow-y-auto max-w-2xl ${imageGalleryMaxHeightCss}`}
+                className={`w-full max-h-[30vh] overflow-y-auto max-w-2xl ${imageGalleryMaxHeightCss}`}
               >
-                {/* EXISTING (STORED) IMAGES */}
-                {/* {filteredExistingImages &&
-                  filteredExistingImages.length > 0 &&
-                  filteredExistingImages.map((p) => (
-                    <UploaderItem
-                      onRemove={onRemoveExistingImage}
-                      src={p.url}
-                      key={p.filename}
-                      filename={p.filename}
-                      index={p.index}
-                      moveCard={movePicture}
-                    />
-                  ))} */}
-                {/* NEWLY ADDED IMAGES */}
-                {/* Always sorted by chronological order. Needs another array with correct indexes */}
-                {imageList.map((image, index) => {
-                  return (
-                    <UploaderItem
-                      src={image.dataString}
-                      filename={image.file.name}
-                      index={index + filteredExistingImages.length}
-                      onRemove={onImageRemove}
-                      moveCard={movePicture}
-                      key={image.file.name}
-                    />
-                  );
-                })}
+                {dragItems
+                  .sort((a, b) => a.index - b.index)
+                  .map((item, index) => {
+                    return (
+                      <UploaderItem
+                        key={index}
+                        url={item.url}
+                        filename={item.filename}
+                        index={index}
+                        onDelete={onImageDelete}
+                        moveCard={movePicture}
+                      />
+                    );
+                  })}
               </div>
             </DndProvider>
-
             <button onClick={onImageRemoveAll}></button>
           </div>
         )}

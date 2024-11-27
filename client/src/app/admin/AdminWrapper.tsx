@@ -30,7 +30,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
       <div className="h-[100vh] w-full">
         <Navbar></Navbar>
         <main
-          className={`flex flex-col py-7 px-9 md:pl-32 h-[94vh] overflow-auto ${mainPaddingLeft}`}
+          className={`flex flex-col py-5 px-9 md:pl-32 h-[94vh] overflow-auto ${mainPaddingLeft}`}
         >
           <div>{children}</div>
         </main>

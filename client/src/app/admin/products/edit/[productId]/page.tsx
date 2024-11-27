@@ -104,10 +104,6 @@ function EditProduct({ params }: Props) {
     isLoading: isLoadingCategories,
   } = useGetCategoriesQuery();
 
-  // const handleReset = () => {
-  //   setFormData(initialForm);
-  // };
-
   const updateImages = (images: ImageListType) => {
     setPictures(images);
   };
@@ -118,13 +114,12 @@ function EditProduct({ params }: Props) {
   if (!productData || !Object.values(productData).length) {
     return <div>Could not access product</div>;
   }
-  console.log("productData : ", productData);
   return (
     <div className="w-full h-full flex justify-center min-w-[300px]">
       <div className="w-full md:w-3/5 xl:w-2/5 flex flex-col items-center md:flex md:flex-col md:items-center text-start">
         {/* FORM */}
         <form
-          className="w-5/6 lg:w-full md:flex-col md:items-center mt-4"
+          className="w-5/6 lg:w-full md:flex-col md:items-center"
           onSubmit={handleSubmit(onSubmit)}
         >
           <Header name="Edit a product" />

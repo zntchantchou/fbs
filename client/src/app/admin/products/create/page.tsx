@@ -73,7 +73,6 @@ function CreateProduct() {
           requestData.append("pictures", asBlob, pic.file.name);
         }
       }
-      console.log("REQUEST DATA pic 1: ", requestData.get("pictures"));
       const created = await createProduct(requestData);
       if (created) {
         console.log("Product has been created: ", created);
@@ -87,10 +86,6 @@ function CreateProduct() {
     error: categoriesError,
     isLoading: isLoadingCategories,
   } = useGetCategoriesQuery();
-
-  // const handleReset = () => {
-  //   setFormData(initialForm);
-  // };
 
   const updateImages = (images: ImageListType) => {
     setPictures(images);

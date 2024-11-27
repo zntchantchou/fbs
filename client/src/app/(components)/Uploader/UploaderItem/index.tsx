@@ -1,59 +1,35 @@
-import { Trash2 } from "lucide-react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { PictureDragItem } from "@/app/(components)/components.types";
 
 type Props = {
-  pictureId: string;
+  id?: string;
   index: number;
   filename: string;
-  src: string;
-  onRemove: (index: number) => void;
-  moveCard?: (dragIndex: number, hoverIndex) => void;
+  url: string;
+  onDelete: (index: number) => void;
+  moveCard?: (fromIndex: number, toIndex) => void;
 };
 const DRAG_ITEM_TYPE = "picture";
 
-function UploaderItem({ index, filename, src, moveCard, onRemove }: Props) {
+function UploaderItem({ index, filename, url, moveCard, onDelete }: Props) {
   const dragItemRef = useRef<HTMLDivElement>(null);
-  const [{ isDragging }, drag] = useDrag({
+  const [_, drag] = useDrag({
     type: DRAG_ITEM_TYPE,
-    item: { filename, index, src },
+    item: { filename, index, url },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   });
 
-  const [{ handlerId }, drop] = useDrop<PictureDragItem, void>({
+  const [__, drop] = useDrop<PictureDragItem, void>({
     accept: DRAG_ITEM_TYPE,
-
-    hover({ filename: fn }, monitor) {
-      if (!dragItemRef.current) {
-        console.log("NO REF");
-        return;
-      }
-      const item = monitor.getItem();
-      console.log("[hover] item ", monitor.getItem());
-      console.log("[hover] filename of dragged?  ", fn);
-      console.log("[hover] filename : ", filename);
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) return; // prevent same spot drop...
-      const hoverBoundingRect = dragItemRef.current?.getBoundingClientRect();
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      const clientOffset = monitor.getClientOffset(); // mouse position
-      const marginToTop = clientOffset.y - hoverBoundingRect.top;
-      // move only if over item above by > 50%
-      if (dragIndex > hoverIndex && marginToTop > hoverMiddleY) return;
-      // move only if over item below by > 50%
-      if (dragIndex < hoverIndex && marginToTop < hoverMiddleY) return;
-    },
     drop(droppedItem, _) {
-      console.log("JUST DROPPED filename: ", filename);
-      console.log("JUST DROPPED at index: ", index);
-      console.log("JUST DROPPED from initial index: ", droppedItem.index);
-      if (index !== droppedItem.index) moveCard(index, droppedItem.index);
+      if (index !== droppedItem.index) {
+        moveCard(droppedItem.index, index);
+      }
     },
   });
   drag(drop(dragItemRef));
@@ -61,28 +37,32 @@ function UploaderItem({ index, filename, src, moveCard, onRemove }: Props) {
     <div
       key={index}
       ref={dragItemRef}
-      // data-handler-id={handlerId}
-      className="mb-4 border-gray-300 bg-blue-200 border-2 rounded-md p-2 flex justify-center h-32 md:max-w-2xl relative"
+      className="mb-4 cursor-move border-gray-300 bg-gray-200 hover:bg-gray-300 border-2 rounded-md p-2 flex justify-center h-20 md:max-w-2xl relative"
     >
-      {/* DELETE IMAGE BUTTON */}
       <div
         className="absolute top-2 right-2 rounded-full h-10 w-10 flex items-center justify-center"
         aria-label="delete the image"
-        onClick={() => onRemove(index)}
+        onClick={() => onDelete(index)}
       >
-        <Trash2 className="hover:text-gray-400 cursor-pointer" />
+        {/* DELETE IMAGE ICON */}
+        <X className="hover:text-gray-400 cursor-pointer" height={16} />
       </div>
+      <div className=" h-full flex items-center bold text-white p-1 w-16">
+        <div className="h-[2.5rem] w-[2.5rem] rounded-full bg-slate-400 text-bold text-lg flex items-center justify-center">
+          {index + 1}
+        </div>
+      </div>{" "}
       <div className="w-3/4 flex justify-center ">
         <Image
-          src={src}
+          src={url}
           width={100}
           height={150}
           alt="uploaded image of the product"
         />
-        {/* image controls */}
-        <div className="h-full w-full flex pl-4 items-center">
+        <div className="h-full w-full flex pl-4 justify-end items-center ">
+          <span className="font-bold mr-2">file: </span>
           <p className="max-w-2xl text-gray-600">
-            Picture {index} : {filename}
+            {filename.slice(0, 26)} {filename.length > 30 && "..."}
           </p>
         </div>
       </div>
