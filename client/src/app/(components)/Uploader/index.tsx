@@ -6,6 +6,7 @@ import UploaderItem from "./UploaderItem";
 import { StoredPicture } from "../components.types";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+
 type UploaderProps = {
   imageGalleryMaxHeight?: string;
   onUpdate: (images: ImageListType) => void;
@@ -36,6 +37,11 @@ function Uploader({
     console.log("ONCHANGE --------- \n");
     setImages(imageList);
     onUpdate(imageList);
+  };
+
+  const movePicture = (dragIndex: number, filename: string) => {
+    console.log("movePicture : dragIndex ", dragIndex);
+    // console.log("movePicture : hoverIndex ", hoverIndex);
   };
 
   const onRemoveExistingImage = (index: number) => {
@@ -105,7 +111,7 @@ function Uploader({
                 className={`w-full overflow-y-auto max-w-2xl ${imageGalleryMaxHeightCss}`}
               >
                 {/* EXISTING (STORED) IMAGES */}
-                {filteredExistingImages &&
+                {/* {filteredExistingImages &&
                   filteredExistingImages.length > 0 &&
                   filteredExistingImages.map((p) => (
                     <UploaderItem
@@ -114,8 +120,9 @@ function Uploader({
                       key={p.filename}
                       filename={p.filename}
                       index={p.index}
+                      moveCard={movePicture}
                     />
-                  ))}
+                  ))} */}
                 {/* NEWLY ADDED IMAGES */}
                 {/* Always sorted by chronological order. Needs another array with correct indexes */}
                 {imageList.map((image, index) => {
@@ -125,7 +132,7 @@ function Uploader({
                       filename={image.file.name}
                       index={index + filteredExistingImages.length}
                       onRemove={onImageRemove}
-                      onUpdate={onImageUpdate}
+                      moveCard={movePicture}
                       key={image.file.name}
                     />
                   );
