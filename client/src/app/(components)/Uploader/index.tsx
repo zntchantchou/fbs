@@ -8,7 +8,7 @@ import UploaderItem from "./UploaderItem";
 import { PictureDragItem, StoredPicture } from "../components.types";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type UploaderProps = {
   imageGalleryMaxHeight?: string;
@@ -52,16 +52,17 @@ function Uploader({
         ...imageList
           .slice(-1 * updatedIndexes.length)
           .map((img, index) =>
-            convertImageToPictureDragItem(img, dragItems.length - 1 + index)
+            convertImageToPictureDragItem(img, dragItems.length + index)
           ),
       ]);
     }
-    console.log("added more than one; ", updatedIndexes);
+    console.log("added more than one; ", [...dragItems]);
     setImages(imageList);
     onUpdate(imageList);
   };
 
   const movePicture = (fromIndex: number, toIndex: number) => {
+    console.log("updatedItems BEFORE: ", dragItems);
     setDragItems(
       dragItems.map((item) => {
         if (item.index === toIndex) return { ...item, index: fromIndex };
@@ -69,7 +70,7 @@ function Uploader({
         return item;
       })
     );
-    console.log("updatedItems : ", dragItems);
+    console.log("updatedItems AFTER: ", dragItems);
   };
 
   const onImageDelete = (index: number) => {
@@ -86,7 +87,7 @@ function Uploader({
   };
   // DROP ZONE
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <ImageUploading
         multiple
         value={images}
@@ -112,31 +113,30 @@ function Uploader({
             >
               Remove all
             </button>
-            <DndProvider backend={HTML5Backend}>
-              <div
-                className={`w-full max-h-[30vh] overflow-y-auto max-w-2xl ${imageGalleryMaxHeightCss}`}
-              >
-                {dragItems
-                  .sort((a, b) => a.index - b.index)
-                  .map((item, index) => {
-                    return (
-                      <UploaderItem
-                        key={index}
-                        url={item.url}
-                        filename={item.filename}
-                        index={index}
-                        onDelete={onImageDelete}
-                        moveCard={movePicture}
-                      />
-                    );
-                  })}
-              </div>
-            </DndProvider>
+
+            <div
+              className={`w-full max-h-[30vh] overflow-y-auto max-w-2xl ${imageGalleryMaxHeightCss}`}
+            >
+              {dragItems
+                .sort((a, b) => a.index - b.index)
+                .map((item, index) => {
+                  return (
+                    <UploaderItem
+                      key={index}
+                      url={item.url}
+                      filename={item.filename}
+                      index={index}
+                      onDelete={onImageDelete}
+                      moveCard={movePicture}
+                    />
+                  );
+                })}
+            </div>
             <button onClick={onImageRemoveAll}></button>
           </div>
         )}
       </ImageUploading>
-    </>
+    </DndProvider>
   );
 }
 
