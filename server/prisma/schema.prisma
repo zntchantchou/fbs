@@ -46,21 +46,22 @@ model CartItem {
 }
 
 model Product {
-  id            String           @id @default(uuid())
-  name          String           @unique
-  userId        String
-  price         Float
-  stockQuantity Int
-  description   String
-  timestamp     DateTime         @default(now())
-  model         String
-  brand         String
-  pictures      ProductPicture[]
-  cartItem      CartItem[]
-  category      Category         @relation(fields: [categoryId], references: [id])
-  categoryId    String
-  summaries     ProductSummary[]
-  orderItems    OrderItem[]
+  id              String           @id @default(uuid())
+  name            String           @unique
+  userId          String
+  price           Float
+  stockQuantity   Int
+  description     String
+  timestamp       DateTime         @default(now())
+  model           String
+  brand           String
+  pictures        ProductPicture[]
+  pictureFolderId String
+  cartItem        CartItem[]
+  category        Category         @relation(fields: [categoryId], references: [id])
+  categoryId      String
+  summaries       ProductSummary[]
+  orderItems      OrderItem[]
 }
 
 model OrderItem {

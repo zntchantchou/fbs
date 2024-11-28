@@ -1,6 +1,9 @@
 "use client";
 
-import { FormValues } from "@/app/(components)/components.types";
+import {
+  FormValues,
+  PictureDragItem,
+} from "@/app/(components)/components.types";
 import Header from "@/app/(components)/Header";
 import Input from "@/app/(components)/forms/Input/Input";
 import TextArea from "@/app/(components)/forms/TextArea/TextArea";
@@ -35,25 +38,17 @@ const initialFormValues: ProductForm = {
 };
 
 function CreateProduct() {
-  const [pictures, setPictures] = useState<ImageListType>([]);
+  const [pictures, setPictures] = useState<PictureDragItem[]>([]);
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
-  const [
-    createProduct,
-    { data: createProductData, error: createProductError },
-  ] = useCreateProductMutation();
+  const [createProduct, { error: createProductError }] =
+    useCreateProductMutation();
   const router = useRouter();
   const { register, handleSubmit, formState } = useForm<ProductForm>({
     defaultValues: initialFormValues,
     mode: "onChange",
   });
   const onSubmit: SubmitHandler<ProductForm> = async (formValues) => {
-    console.log(
-      "ON SUBMIT formState: \n ",
-      formState.isValid,
-      formState.errors,
-      pictures
-    );
-    if (!formState.isValid || !pictures.length) return;
+    if (Object.keys(formState.errors).length || !pictures.length) return;
     const requestData = new FormData();
     requestData.set("name", formValues.name);
     requestData.set("price", formValues.price.toString());
@@ -64,7 +59,8 @@ function CreateProduct() {
     requestData.set("category", formValues.category);
 
     if (pictures) {
-      for (const pic of pictures) {
+      const sortedPictures = pictures.sort((a, b) => a.index - b.index);
+      for (const pic of sortedPictures) {
         if (pic.file) {
           const buffer = await pic.file.arrayBuffer();
           const asBlob = new Blob([new Uint8Array(buffer)], {
@@ -75,19 +71,14 @@ function CreateProduct() {
       }
       const created = await createProduct(requestData);
       if (created) {
-        console.log("Product has been created: ", created);
         router.push("/admin/products/edit/" + created.data.id);
       }
     }
   };
 
-  const {
-    data: categories,
-    error: categoriesError,
-    isLoading: isLoadingCategories,
-  } = useGetCategoriesQuery();
+  const { data: categories } = useGetCategoriesQuery();
 
-  const updateImages = (images: ImageListType) => {
+  const updateImages = (images: PictureDragItem[]) => {
     setPictures(images);
   };
   if (createProductError) {

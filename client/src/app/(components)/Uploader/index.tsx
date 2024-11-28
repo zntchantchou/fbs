@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 
 type UploaderProps = {
   imageGalleryMaxHeight?: string;
-  onUpdate: (images: ImageListType) => void;
-  onUpdateStoredPictures?: (images: StoredPicture[]) => void;
+  onUpdate: (images: PictureDragItem[]) => void;
+  onDelete?: (images: PictureDragItem) => void;
   pictures?: StoredPicture[];
 };
 
@@ -33,6 +33,7 @@ function Uploader({
       filename: image.file.name,
       id: null,
       index,
+      file: image.file,
     };
   };
   const [dragItems, setDragItems] = useState<PictureDragItem[]>(pictures);
@@ -58,8 +59,16 @@ function Uploader({
     }
     console.log("added more than one; ", [...dragItems]);
     setImages(imageList);
-    onUpdate(imageList);
   };
+
+  useEffect(() => {
+    onUpdate(dragItems);
+  }, [dragItems, onUpdate]);
+
+  useEffect(() => {
+    console.log("[UPLOADER USEFFECT] Pictures : ", pictures);
+    setDragItems(pictures);
+  }, [pictures]);
 
   const movePicture = (fromIndex: number, toIndex: number) => {
     console.log("updatedItems BEFORE: ", dragItems);
@@ -77,8 +86,7 @@ function Uploader({
     setDragItems(
       [...dragItems]
         .filter((item) => item.index !== index)
-        // make sure indexes are always in sync as we delete by index
-        .map((item, index) => ({ ...item, index }))
+        .map((item, index) => ({ ...item, index })) // make sure indexes are always in sync as we delete by index
     );
   };
 
@@ -95,14 +103,14 @@ function Uploader({
         maxNumber={maxNumber}
         dataURLKey="url"
       >
-        {({ onImageUpload, onImageRemoveAll, isDragging, dragProps }) => (
+        {({ onImageUpload, isDragging, dragProps }) => (
           <div>
             <div
               onClick={onImageUpload}
               {...dragProps}
               className={`w-full max-w-2xl h-20 mb-4 border-dashed ${
                 isDragging ? "bg-blue-500 text-white" : "bg-blue-300"
-              } cursor-pointer border-indigo-500 border-2 rounded-md text-blue-600 text-md flex items-center justify-center`}
+              } cursor-pointer border-indigo-500 hover:bg-blue-400 hover:text-white border-2 rounded-md text-blue-700 text-md flex items-center justify-center`}
             >
               Drop a file here or click to browse
             </div>
@@ -115,24 +123,24 @@ function Uploader({
             </button>
 
             <div
-              className={`w-full max-h-[30vh] overflow-y-auto max-w-2xl ${imageGalleryMaxHeightCss}`}
+              className={`w-full max-h-[30vh] overflow-y-auto max-w-2xl py-2 ${imageGalleryMaxHeightCss}`}
             >
-              {dragItems
-                .sort((a, b) => a.index - b.index)
-                .map((item, index) => {
-                  return (
-                    <UploaderItem
-                      key={index}
-                      url={item.url}
-                      filename={item.filename}
-                      index={index}
-                      onDelete={onImageDelete}
-                      moveCard={movePicture}
-                    />
-                  );
-                })}
+              {dragItems.length > 0 &&
+                [...dragItems]
+                  .sort((a, b) => a.index - b.index)
+                  .map((item, index) => {
+                    return (
+                      <UploaderItem
+                        key={index}
+                        url={item.url}
+                        filename={item.filename}
+                        index={index}
+                        onDelete={onImageDelete}
+                        moveCard={movePicture}
+                      />
+                    );
+                  })}
             </div>
-            <button onClick={onImageRemoveAll}></button>
           </div>
         )}
       </ImageUploading>

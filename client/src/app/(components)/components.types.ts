@@ -9,6 +9,7 @@ export interface PictureDragItem {
   id?: string;
   url: string;
   filename: string;
+  file?: File;
 }
 
 export interface StoredPicture extends PictureDragItem {}

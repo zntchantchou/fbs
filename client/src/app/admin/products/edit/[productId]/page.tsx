@@ -1,6 +1,9 @@
 "use client";
 
-import { FormValues, StoredPicture } from "@/app/(components)/components.types";
+import {
+  FormValues,
+  PictureDragItem,
+} from "@/app/(components)/components.types";
 import Header from "@/app/(components)/Header";
 import Input from "@/app/(components)/forms/Input/Input";
 import TextArea from "@/app/(components)/forms/TextArea/TextArea";
@@ -8,13 +11,12 @@ import Uploader from "@/app/(components)/Uploader";
 import {
   Product,
   ProductPicture,
+  useEditProductMutation,
   useGetCategoriesQuery,
   useGetProductByIdQuery,
-  // useGetProductByIdQuery,
 } from "@/state/api";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ImageListType } from "react-images-uploading";
 import ValidationError from "@/app/(components)/forms/ValidationError/ValidationError";
 
 interface ProductForm extends FormValues, Product {
@@ -44,24 +46,19 @@ type Props = {
 };
 
 function EditProduct({ params }: Props) {
-  const [pictures, setPictures] = useState<ImageListType>([]);
-  const [existingImages, setExistingImages] = useState<StoredPicture[]>([]);
+  const [pictures, setPictures] = useState<PictureDragItem[]>([]);
   const [initialFormState, _] = useState(emptyFormValues);
+  const [editProduct, { data: editData, error: editError }] =
+    useEditProductMutation();
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
-
-  console.log("SLUG IS: ", params);
-  const {
-    data: productData,
-    error: productError,
-    isLoading: productLoading,
-  } = useGetProductByIdQuery(params.productId);
+  const { data: productData } = useGetProductByIdQuery(params.productId);
 
   const { register, handleSubmit, formState, setValue } = useForm<ProductForm>({
     defaultValues: initialFormState,
     mode: "onChange",
   });
   const onSubmit: SubmitHandler<ProductForm> = async (formValues) => {
-    if (!formState.isValid || !pictures.length) return;
+    if (hasFormError() || !pictures.length) return;
     const requestData = new FormData();
     requestData.set("name", formValues.name);
     requestData.set("price", formValues.price.toString());
@@ -70,25 +67,30 @@ function EditProduct({ params }: Props) {
     requestData.set("brand", formValues.brand);
     requestData.set("stockQuantity", formValues.stockQuantity.toString());
     requestData.set("category", formValues.category);
-
     if (pictures) {
       for (const pic of pictures) {
         if (pic.file) {
+          // handle pictures that are being uploaded for the first time
           const buffer = await pic.file.arrayBuffer();
           const asBlob = new Blob([new Uint8Array(buffer)], {
             type: pic.file.type,
           });
-          requestData.append("pictures", asBlob, pic.file.name);
+          requestData.append("pictureFiles", asBlob, pic.file.name);
         }
       }
-      console.log("REQUEST DATA pic 1: ", requestData.get("pictures"));
-      // const created = await roduct(requestData);
-      // if (created) {
-      //   console.log("Product has been created: ", created);
-      // }
+      const picturesData = [...pictures].map(({ id, index, filename }) => ({
+        id,
+        index,
+        filename,
+      }));
+      requestData.append("picturesData", JSON.stringify(picturesData));
+      await editProduct({
+        updatedProduct: requestData,
+        productId: params.productId,
+      });
     }
   };
-
+  // initialize form from stored product
   useEffect(() => {
     if (productData) {
       const keys = Object.keys(emptyFormValues);
@@ -98,17 +100,13 @@ function EditProduct({ params }: Props) {
     }
   }, [productData, setValue]);
 
-  const {
-    data: categories,
-    error: categoriesError,
-    isLoading: isLoadingCategories,
-  } = useGetCategoriesQuery();
-
-  const updateImages = (images: ImageListType) => {
-    setPictures(images);
+  const hasFormError = () => {
+    return !!Object.keys(formState.errors).length;
   };
-  const updateStoredImages = (images: StoredPicture[]) => {
-    setExistingImages(images);
+  const { data: categories } = useGetCategoriesQuery();
+
+  const updateImages = (images: PictureDragItem[]) => {
+    setPictures(images);
   };
 
   if (!productData || !Object.values(productData).length) {
@@ -211,16 +209,15 @@ function EditProduct({ params }: Props) {
           <Uploader
             imageGalleryMaxHeight="200px"
             onUpdate={updateImages}
-            onUpdateStoredPictures={updateStoredImages}
             pictures={productData.pictures}
           />
 
-          {/* {pictures.length < 1 && formState.isSubmitted && (
+          {pictures.length < 1 && formState.isSubmitted && (
             <ValidationError
               fieldName="pictures"
               label="Please upload at least one picture"
             />
-          )} */}
+          )}
           <div className="flex flex-col md:flex-row max-w-2xl">
             <button
               className="py-3 px-6 bg-green-700 text-white rounded hover:bg-green-900"

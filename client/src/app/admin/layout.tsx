@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
 import AdminWrapper from "./AdminWrapper";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
 export const metadata: Metadata = {
   title: "Create Next App",

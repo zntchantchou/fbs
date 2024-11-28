@@ -19,7 +19,9 @@ export async function authMiddlewareFn(
     else next();
   } catch (err) {
     // handle all possible errors here
-    console.error("[authMiddleware] error: \n", err);
+    console.error(
+      "---------- [authMiddleware] Error (INVALID TOKEN): ----------- \n"
+    );
     res.status(401).json({ err });
   }
 }

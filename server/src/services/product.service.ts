@@ -12,6 +12,7 @@ export interface NewProductData {
   description: string;
   model: string;
   userId: string;
+  pictureFolderId: string;
   pictures: { url: string; index: number; filename: string }[];
 }
 
@@ -26,6 +27,7 @@ class ProductService {
     description,
     model,
     userId,
+    pictureFolderId,
   }: NewProductData) {
     const category = await CategoryService.getCategoryByName(categoryName);
     if (!category)
@@ -41,6 +43,7 @@ class ProductService {
         description: description,
         userId: userId,
         model: model,
+        pictureFolderId: pictureFolderId,
         categoryId: category.id,
         stockQuantity: stockQuantity,
         pictures: { create: [...pictures] },

@@ -99,7 +99,7 @@ export const api = createApi({
     >({
       query: ({ updatedProduct, productId }) => {
         return {
-          method: "PATCH",
+          method: "PUT",
           url: "products/" + productId,
           body: updatedProduct,
         };
