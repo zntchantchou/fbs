@@ -62,13 +62,16 @@ function Uploader({
   };
 
   useEffect(() => {
+    console.log("[Uploader] USE EFFECT ON UPDATE");
     onUpdate(dragItems);
   }, [dragItems, onUpdate]);
 
-  useEffect(() => {
-    console.log("[UPLOADER USEFFECT] Pictures : ", pictures);
-    setDragItems(pictures);
-  }, [pictures]);
+  // useEffect(() => {
+  //   console.log("[UPLOADER USEFFECT] Pictures : ", pictures);
+  //   if (pictures !== dragItems) {
+  //     setDragItems(pictures);
+  //   }
+  // }, [pictures, setDragItems, dragItems]);
 
   const movePicture = (fromIndex: number, toIndex: number) => {
     console.log("updatedItems BEFORE: ", dragItems);

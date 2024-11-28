@@ -3,7 +3,7 @@ import { RootState } from "@/app/redux";
 import { ImageListType } from "react-images-uploading";
 export interface Product {
   id?: string;
-  category: string;
+  category: Category;
   description: string;
   name: string;
   price: number;

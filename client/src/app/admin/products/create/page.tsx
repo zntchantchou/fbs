@@ -9,7 +9,7 @@ import Input from "@/app/(components)/forms/Input/Input";
 import TextArea from "@/app/(components)/forms/TextArea/TextArea";
 import Uploader from "@/app/(components)/Uploader";
 import { useCreateProductMutation, useGetCategoriesQuery } from "@/state/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ImageListType } from "react-images-uploading";
 import ValidationError from "@/app/(components)/forms/ValidationError/ValidationError";
@@ -31,7 +31,7 @@ const initialFormValues: ProductForm = {
   name: "",
   stockQuantity: 0,
   pictures: [],
-  category: "4 strings",
+  category: "",
   brand: "",
   description: "",
   model: "",
@@ -40,13 +40,22 @@ const initialFormValues: ProductForm = {
 function CreateProduct() {
   const [pictures, setPictures] = useState<PictureDragItem[]>([]);
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
+  const { data: categories } = useGetCategoriesQuery();
+
   const [createProduct, { error: createProductError }] =
     useCreateProductMutation();
   const router = useRouter();
-  const { register, handleSubmit, formState } = useForm<ProductForm>({
-    defaultValues: initialFormValues,
+  const { register, handleSubmit, formState, setValue } = useForm<ProductForm>({
+    defaultValues: { ...initialFormValues },
     mode: "onChange",
   });
+  useEffect(() => {
+    if (Array.isArray(categories)) {
+      console.log("SETTING CATEGORY ");
+      setValue("category", categories[0].id);
+    }
+  }, [categories, setValue]);
+
   const onSubmit: SubmitHandler<ProductForm> = async (formValues) => {
     if (Object.keys(formState.errors).length || !pictures.length) return;
     const requestData = new FormData();
@@ -75,8 +84,6 @@ function CreateProduct() {
       }
     }
   };
-
-  const { data: categories } = useGetCategoriesQuery();
 
   const updateImages = (images: PictureDragItem[]) => {
     setPictures(images);
@@ -163,7 +170,7 @@ function CreateProduct() {
           >
             {categories &&
               categories.map((category) => (
-                <option key={category.id} value={category.name}>
+                <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}

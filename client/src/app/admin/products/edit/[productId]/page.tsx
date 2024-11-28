@@ -9,22 +9,22 @@ import Input from "@/app/(components)/forms/Input/Input";
 import TextArea from "@/app/(components)/forms/TextArea/TextArea";
 import Uploader from "@/app/(components)/Uploader";
 import {
-  Product,
   ProductPicture,
   useEditProductMutation,
   useGetCategoriesQuery,
   useGetProductByIdQuery,
 } from "@/state/api";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ValidationError from "@/app/(components)/forms/ValidationError/ValidationError";
+import Select from "react-select";
 
-interface ProductForm extends FormValues, Product {
+interface ProductForm extends FormValues {
   price: number;
   name: string;
   stockQuantity: number;
   pictures: ProductPicture[];
-  category: string;
+  category: { label: string; value: string };
   brand: string;
   description: string;
   model: string;
@@ -35,7 +35,7 @@ const emptyFormValues: ProductForm = {
   name: "",
   stockQuantity: 0,
   pictures: [],
-  category: "4 strings",
+  category: { label: "4 strings", value: "" },
   brand: "",
   description: "",
   model: "",
@@ -48,15 +48,15 @@ type Props = {
 function EditProduct({ params }: Props) {
   const [pictures, setPictures] = useState<PictureDragItem[]>([]);
   const [initialFormState, _] = useState(emptyFormValues);
-  const [editProduct, { data: editData, error: editError }] =
-    useEditProductMutation();
+  const [editProduct] = useEditProductMutation();
+  const { data: categories } = useGetCategoriesQuery();
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
   const { data: productData } = useGetProductByIdQuery(params.productId);
-
-  const { register, handleSubmit, formState, setValue } = useForm<ProductForm>({
-    defaultValues: initialFormState,
-    mode: "onChange",
-  });
+  const { register, handleSubmit, formState, setValue, control } =
+    useForm<ProductForm>({
+      defaultValues: initialFormState,
+      mode: "onChange",
+    });
   const onSubmit: SubmitHandler<ProductForm> = async (formValues) => {
     if (hasFormError() || !pictures.length) return;
     const requestData = new FormData();
@@ -66,7 +66,7 @@ function EditProduct({ params }: Props) {
     requestData.set("model", formValues.model);
     requestData.set("brand", formValues.brand);
     requestData.set("stockQuantity", formValues.stockQuantity.toString());
-    requestData.set("category", formValues.category);
+    requestData.set("category", formValues.category.value);
     if (pictures) {
       for (const pic of pictures) {
         if (pic.file) {
@@ -95,7 +95,16 @@ function EditProduct({ params }: Props) {
     if (productData) {
       const keys = Object.keys(emptyFormValues);
       for (const key of keys) {
-        setValue(key, productData[key]);
+        if (key === "category") {
+          console.log("KEY", key);
+          console.log("VALUE", productData[key].id);
+          setValue(key, {
+            label: productData[key].name,
+            value: productData[key].id,
+          });
+        } else {
+          setValue(key, productData[key]);
+        }
       }
     }
   }, [productData, setValue]);
@@ -103,7 +112,6 @@ function EditProduct({ params }: Props) {
   const hasFormError = () => {
     return !!Object.keys(formState.errors).length;
   };
-  const { data: categories } = useGetCategoriesQuery();
 
   const updateImages = (images: PictureDragItem[]) => {
     setPictures(images);
@@ -131,7 +139,6 @@ function EditProduct({ params }: Props) {
             label="name"
             placeholder="name"
           />
-
           <Input
             errors={formState.errors}
             register={register}
@@ -181,21 +188,27 @@ function EditProduct({ params }: Props) {
             label="Stock quantity"
             placeholder="Stock quantity"
           />
-
+          {/* {categories && categories.length && */}
           <label htmlFor="category" className={labelClassnames}>
             Category
           </label>
-          <select
-            className="bg-blue-200 h-10 rounded px-6 w-full md:max-w-32"
-            {...register("category", { required: true })}
-          >
-            {categories &&
-              categories.map((category) => (
-                <option key={category.id} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
-          </select>
+
+          <Controller
+            name="category"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                isSearchable={false}
+                isClearable={false}
+                options={categories.map((c) => ({
+                  label: c.name,
+                  value: c.id,
+                }))}
+              />
+            )}
+          />
+
           <ValidationError
             fieldName="category"
             errors={formState.errors}
@@ -211,7 +224,6 @@ function EditProduct({ params }: Props) {
             onUpdate={updateImages}
             pictures={productData.pictures}
           />
-
           {pictures.length < 1 && formState.isSubmitted && (
             <ValidationError
               fieldName="pictures"

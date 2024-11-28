@@ -1,7 +1,11 @@
 import { ImageListType } from "react-images-uploading";
 
+type SelectItem = {
+  label: string;
+  value: string;
+};
 export type FormValues = {
-  [index: string]: string | number | ImageListType;
+  [index: string]: string | number | ImageListType | SelectItem;
 };
 
 export interface PictureDragItem {

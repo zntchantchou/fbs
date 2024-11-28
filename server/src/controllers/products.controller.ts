@@ -44,12 +44,7 @@ export const getProduct = async (
       include: { pictures: true, category: true },
     });
 
-    const formattedProduct = { ...product };
-    const formattedCategory = { ...product?.category };
-    delete formattedProduct.categoryId;
-    res
-      .status(200)
-      .json({ ...formattedProduct, category: formattedCategory.name });
+    res.status(200).json(product);
     return;
   } catch (error) {
     console.log("[GET PRODUCT] error: \n", error);
@@ -84,7 +79,7 @@ export const createProduct = async (
       name: req.body.name,
       stockQuantity: Number.parseInt(req.body.stockQuantity),
       price: Number.parseFloat(req.body.price),
-      categoryName: req.body.category,
+      categoryId: req.body.category,
       brand: req.body.brand,
       description: req.body.description,
       model: req.body.model,
@@ -182,6 +177,7 @@ export const updateProduct = async (
       });
     }
 
+    // UPDATE PICTURES
     const idsToIndexesMap: { [index: string]: number } = {};
     for (const pic of picturesData) {
       if (pic.id && !Number.isNaN(pic.index)) {
@@ -200,7 +196,19 @@ export const updateProduct = async (
       );
       updatedProductPictures = await Promise.all(updatedPromises);
     }
-    // UPDATE PICTURES
+
+    // UPDATE PRODUCT ITSELF
+    const updatedProductData = {};
+    const properties = [
+      "name",
+      "model",
+      "brand",
+      "price",
+      "stockQuantity",
+      "description",
+      "categoryId",
+    ];
+    console.log("CATEGORY req.category: ", req.body.category);
     res.status(200).json({
       pictures_created: newProductPictures ? newProductPictures.count : 0,
       pictures_updated: updatedProductPictures
