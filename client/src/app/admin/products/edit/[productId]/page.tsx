@@ -188,7 +188,6 @@ function EditProduct({ params }: Props) {
             label="Stock quantity"
             placeholder="Stock quantity"
           />
-          {/* {categories && categories.length && */}
           <label htmlFor="category" className={labelClassnames}>
             Category
           </label>
@@ -208,7 +207,6 @@ function EditProduct({ params }: Props) {
               />
             )}
           />
-
           <ValidationError
             fieldName="category"
             errors={formState.errors}

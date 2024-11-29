@@ -9,11 +9,14 @@ TODAY:
       ✔ add 'Brand' field to back-end @done(24-11-22 16:20)
       ✔ add 'unique' constrain to field to field name
       ✔ adds userId to product @done(24-11-26 14:13)
+      ☐ handle product 'normal' fields update
+      ☐ Add select to create FORM for category
       ☐ handle same name already exists in front-end
-      ☐ handle syncing field 'number of pictures' on product (product.pictures.length)
-  Input validation: 
-    ☐ Add validation middleware in BE
-    ☐ Add form validation library FE
+
+Input validation: 
+  ☐ Add validation middleware in BE
+  ✔ Add form validation library FE @done(24-11-29 10:29)
+
 Api actions needed:
   Cart:
     ☐ create-cart
@@ -22,15 +25,15 @@ Api actions needed:
     Order:
     ☐ Create an order (by paying)
     Products:  
-      ☐ publish
-      ☐ unpublish
-      ☐ Product page
-      ☐ Redirect to product page after successful creation
+    ☐ publish
+    ☐ unpublish
+    ☐ Product page
+    ☐ Redirect to product page after successful creation
     UserSettings:
-      ☐ update settings
+    ☐ update settings
     SalesSummary: 
-      ☐ get last month
-      ☐ get by date range
+    ☐ get last month
+    ☐ get by date range
 
   DONE:
     ✔ get categories @done(24-11-19 15:41)

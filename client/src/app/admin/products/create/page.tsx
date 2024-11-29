@@ -10,17 +10,18 @@ import TextArea from "@/app/(components)/forms/TextArea/TextArea";
 import Uploader from "@/app/(components)/Uploader";
 import { useCreateProductMutation, useGetCategoriesQuery } from "@/state/api";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ImageListType } from "react-images-uploading";
 import ValidationError from "@/app/(components)/forms/ValidationError/ValidationError";
 import { useRouter } from "next/navigation";
+import Select from "react-select";
 
 interface ProductForm extends FormValues {
   price: number;
   name: string;
   stockQuantity: number;
   pictures: ImageListType;
-  category: string;
+  category: { label: string; value: string };
   brand: string;
   description: string;
   model: string;
@@ -31,7 +32,7 @@ const initialFormValues: ProductForm = {
   name: "",
   stockQuantity: 0,
   pictures: [],
-  category: "",
+  category: { label: "4 strings", value: "" },
   brand: "",
   description: "",
   model: "",
@@ -41,18 +42,27 @@ function CreateProduct() {
   const [pictures, setPictures] = useState<PictureDragItem[]>([]);
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
   const { data: categories } = useGetCategoriesQuery();
-
+  const getCategoryOptions = () => {
+    if (categories) {
+      return categories.map((c) => ({ label: c.name, value: c.id }));
+    }
+    return [];
+  };
   const [createProduct, { error: createProductError }] =
     useCreateProductMutation();
   const router = useRouter();
-  const { register, handleSubmit, formState, setValue } = useForm<ProductForm>({
-    defaultValues: { ...initialFormValues },
-    mode: "onChange",
-  });
+  const { register, handleSubmit, formState, setValue, control } =
+    useForm<ProductForm>({
+      defaultValues: { ...initialFormValues },
+      mode: "onChange",
+    });
   useEffect(() => {
+    //  set default category
     if (Array.isArray(categories)) {
-      console.log("SETTING CATEGORY ");
-      setValue("category", categories[0].id);
+      setValue("category", {
+        label: categories[0].name,
+        value: categories[0].id,
+      });
     }
   }, [categories, setValue]);
 
@@ -65,7 +75,7 @@ function CreateProduct() {
     requestData.set("model", formValues.model);
     requestData.set("brand", formValues.brand);
     requestData.set("stockQuantity", formValues.stockQuantity.toString());
-    requestData.set("category", formValues.category);
+    requestData.set("category", formValues.category.value);
 
     if (pictures) {
       const sortedPictures = pictures.sort((a, b) => a.index - b.index);
@@ -164,17 +174,18 @@ function CreateProduct() {
           <label htmlFor="category" className={labelClassnames}>
             Category
           </label>
-          <select
-            className="bg-blue-200 h-10 rounded px-6 w-full md:max-w-32"
-            {...register("category", { required: true })}
-          >
-            {categories &&
-              categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-          </select>
+          <Controller
+            name="category"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                isSearchable={false}
+                isClearable={false}
+                options={getCategoryOptions()}
+              />
+            )}
+          />
           <ValidationError
             fieldName="category"
             errors={formState.errors}

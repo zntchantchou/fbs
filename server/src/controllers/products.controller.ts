@@ -169,6 +169,7 @@ export const updateProduct = async (
       .filter((existingPic) => !picturesToKeepIds.includes(existingPic.id))
       .map((pic) => pic.id);
 
+    console.log("Pictures To delete ", picturesToDeleteIds);
     if (picturesToDeleteIds.length) {
       await prisma.productPicture.deleteMany({
         where: {
@@ -180,14 +181,21 @@ export const updateProduct = async (
     // UPDATE PICTURES
     const idsToIndexesMap: { [index: string]: number } = {};
     for (const pic of picturesData) {
-      if (pic.id && !Number.isNaN(pic.index)) {
+      if (
+        pic.id &&
+        !picturesToDeleteIds.includes(pic.id) && // filter out deleted pictures
+        !Number.isNaN(pic.index)
+      ) {
         idsToIndexesMap[pic.id] = pic.index;
       }
     }
     const picturesToUpdate = [...productToUpdate.pictures].filter(
-      (picture) => picture.index !== idsToIndexesMap[picture.id]
+      (picture) =>
+        picture.index !== idsToIndexesMap[picture.id] &&
+        !picturesToDeleteIds.includes(picture.id) // filter out deleted pictures
     );
     if (picturesToUpdate.length) {
+      console.log("picturesToUpdate ", picturesToUpdate);
       const updatedPromises = picturesToUpdate.map((pic) =>
         prisma.productPicture.update({
           where: { id: pic.id },
