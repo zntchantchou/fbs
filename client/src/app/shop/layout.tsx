@@ -1,11 +1,11 @@
 "use client";
 
-import Navbar from "@/app/(components)/admin/Navbar";
+import Navbar from "@/app/(components)/Navbar";
 import Sidebar from "@/app/(components)/Sidebar";
 import { useAppSelector } from "../redux";
 import { useEffect } from "react";
 
-function AdminContainer({ children }: { children: React.ReactNode }) {
+function ShopContainer({ children }: { children: React.ReactNode }) {
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed
   );
@@ -39,8 +39,8 @@ function AdminContainer({ children }: { children: React.ReactNode }) {
   );
 }
 
-function AdminWrapper({ children }: { children: React.ReactNode }) {
-  return <AdminContainer>{children}</AdminContainer>;
+function ShopLayout({ children }: { children: React.ReactNode }) {
+  return <ShopContainer>{children}</ShopContainer>;
 }
 
-export default AdminWrapper;
+export default ShopLayout;

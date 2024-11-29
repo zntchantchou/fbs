@@ -7,7 +7,7 @@ import {
 import Header from "@/app/(components)/Header";
 import Input from "@/app/(components)/forms/Input/Input";
 import TextArea from "@/app/(components)/forms/TextArea/TextArea";
-import Uploader from "@/app/(components)/Uploader";
+import Uploader from "@/app/(components)/admin/Uploader";
 import {
   ProductPicture,
   useEditProductMutation,

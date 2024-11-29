@@ -18,15 +18,15 @@ function Navbar() {
   const toggleDarkMode = () => {
     dispatch(setIsDarkMode(!isDarkMode));
   };
-  const mainPaddingLeft = isSidebarCollapsed ? "md:pl-24" : "pl-72";
+
   const userInfo = AuthenticationService.getUser();
 
   return (
     <div
-      className={`flex items-center w-full justify-between h-[6vh] px-4 border-b-2 border-b-gray-200 ${mainPaddingLeft}`}
+      className={`flex justify-between items-center w-full h-[6vh] px-4 border-b-2 border-b-gray-200`}
     >
       {/* LEFT SIDE */}
-      <div className="w-[5%] flex justify-between items-center gap-5">
+      <div className="flex justify-between items-center gap-5">
         <button
           className="px-3 py-3 bg-gray-100 rounded-full hover:bg-blue-100"
           onClick={toggleSidebar}
@@ -34,17 +34,8 @@ function Navbar() {
           <Menu className="w-4 h-4" />
         </button>
       </div>
-      <div className="w-[75%]">
-        <input
-          type="text"
-          name="search"
-          id="search"
-          placeholder="what are you looking for ?"
-          className="w-full hidden md:block text-slate-800 max-w-2xl border-gray-400 border-2 rounded-md p-2"
-        />
-      </div>
       {/* RIGHT SIDE */}
-      <div className="flex justify-between items-center gap-5 w-[20%]">
+      <div className="flex justify-between items-center gap-5">
         <div className="hidden md:flex justify-between items-center gap-5">
           <div>
             <button onClick={toggleDarkMode}>
