@@ -18,7 +18,7 @@ export const getProducts = async (
           contains: search,
         },
       },
-      include: { pictures: true },
+      include: { pictures: true, category: true },
     });
     res.status(200).json(products);
     return;
@@ -119,6 +119,7 @@ export const updateProduct = async (
       res.send(400).json({ message: "could not find product to update" });
       return;
     }
+    console.log("PICTURE DATA CHECK: ", req.body.picturesData);
     if (req.body.picturesData) {
       const picturesData = JSON.parse(req.body.picturesData) as {
         index: number;

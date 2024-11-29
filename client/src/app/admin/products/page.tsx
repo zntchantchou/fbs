@@ -1,108 +1,91 @@
 "use client";
 
-import { useCreateProductMutation, useGetProductsQuery } from "@/state/api";
-import { PlusCircleIcon, SearchIcon } from "lucide-react";
-import { useState } from "react";
+import { useGetProductsQuery } from "@/state/api";
 import Header from "@/app/(components)/Header";
-import Rating from "@/app/(components)/Rating";
-import CreateProductModal from "./CreateProductModal";
-import ProductIcon from "@/assets/product.png";
-import Image from "next/image";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { CirclePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-function Products() {
-  const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: products, isError, isLoading } = useGetProductsQuery();
-  const [createProduct] = useCreateProductMutation();
-  const goToCreatePage = () => {
-    console.log("[go to create page]");
-    router.push("/admin/products/create");
-  };
-  // await createProduct(productData);
+const columns: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "ID",
+    width: 90,
+  },
+  {
+    field: "name",
+    headerName: "Name",
+    width: 200,
+  },
+  {
+    field: "model",
+    headerName: "Model",
+    width: 200,
+  },
+  {
+    field: "brand",
+    headerName: "Brand",
+    width: 200,
+  },
+  {
+    field: "category",
+    headerName: "Category",
+    width: 110,
+    valueGetter: (_, row) => `${row.category.name}`,
+  },
+  {
+    field: "stockQuantity",
+    headerName: "Stock",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "timestamp",
+    headerName: "Created at",
+    width: 150,
+    type: "string",
+    valueGetter: (_, row) => {
+      const asDate = new Date(row.timestamp);
+      const formatted = `${asDate.getDate()}/${asDate.getMonth()}/${asDate.getFullYear()}`;
+      return formatted.toString();
+    },
+  },
+];
 
-  if (!products) return <div>No products</div>;
-  console.log("products", products, Array.isArray(products));
-  let productsList = [];
-  productsList = products?.map((product) => {
-    const rating = product.rating ? (
-      <div className="flex items-center mt-2">
-        <Rating rating={product.rating} />
-      </div>
-    ) : null;
-    return (
-      <div
-        key={product.id}
-        className="border shadow rounded-md p-4 max-w-full w-full mx-auto"
-      >
-        <div className="flex flex-col items-center">
-          <Image height={100} src={ProductIcon} alt="a product" />
-          <h3 className="text-lg text-gray-900 font-semibold">
-            {product.name}
-          </h3>
-          <p className="text-gray-800">${product.price.toFixed(2)}</p>
-          <div className="text-sm text-gray-600 mt-1">
-            Stock: {product.stockQuantity}
-          </div>
-          {rating}
-        </div>
-        {/* MODAL */}
-        <CreateProductModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onCreate={createProduct}
-        />
-      </div>
-    );
-  });
+function Products() {
+  const { data: products, isError, isLoading } = useGetProductsQuery();
+  const router = useRouter();
   if (isLoading) {
-    return <div className="py-4"> Loading... </div>;
+    return <div className="py-4">Loading...</div>;
   }
 
   if (isError || !products) {
-    console.log(
-      "FAILED TO FETCH products",
-      process.env.NEXT_PUBLIC_API_BASE_URL
-    );
-    console.log("FULL ENV = ", process.env);
     return (
-      <div className="text-center py-4 text-red-500">
-        Failed to fetch products...
-      </div>
+      <div className="py-4 text-center text-red-500">Failed to fetch...</div>
     );
   }
   return (
-    <div className="mx-auto pb-5 w-full">
-      {/* SEARCH BAR */}
-      <div className="mb-6">
-        <div className="flex items-center border-2 border-gray-200 rounded">
-          <SearchIcon className="w-5 h-5 text-gray-500 m-2" />
-          <input
-            type="text"
-            className="w-full py-2 px-4 rounded bg-white"
-            placeholder="Search for a product.."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* HEADER BAR */}
-      <div className="flex justify-between items-center mb-6">
-        <Header name="products" />
+    <div className="flex flex-col">
+      <div className="w-full flex justify-between">
+        <Header name="Products" />
         <button
-          className="flex items-center bg-blue-500 hover:bg-blue-700 text-gray-200 font-bold py-2 px-4 rounded"
-          onClick={() => goToCreatePage()}
+          className="py-3 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+          onClick={() => router.push("/admin/products/create")}
         >
-          <PlusCircleIcon className="w-5 h-5 mr-2 !text-gray-200" />
-          Create product
+          Create a product
+          <CirclePlus height={15} className="text-white" />
         </button>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-between">
-        {isLoading ? <div>Loading...</div> : productsList}
-      </div>
+      <DataGrid
+        rows={products}
+        onRowClick={(params) =>
+          router.push("/admin/products/edit/" + params.id)
+        }
+        columns={columns}
+        getRowId={(row) => row.id}
+        checkboxSelection
+        className="bg-white shadow rounded-lg border border-gray-200 mt-5 !text-gray-700 cursor-pointer"
+      />
     </div>
   );
 }

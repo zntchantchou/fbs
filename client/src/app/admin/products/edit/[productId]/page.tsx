@@ -105,7 +105,7 @@ function EditProduct({ params }: Props) {
           const asBlob = new Blob([new Uint8Array(buffer)], {
             type: pic.file.type,
           });
-          form.append("pictureFiles", asBlob, pic.file.name);
+          form.set("pictureFiles", asBlob, pic.file.name);
         }
       }
       const picturesData = [...pictures].map(({ id, index, filename }) => ({
@@ -113,7 +113,7 @@ function EditProduct({ params }: Props) {
         index,
         filename,
       }));
-      form.append("picturesData", JSON.stringify(picturesData));
+      form.set("picturesData", JSON.stringify(picturesData));
     }
   };
 
@@ -122,7 +122,7 @@ function EditProduct({ params }: Props) {
     console.log("FormValues ", formState, formValues);
     const requestData = new FormData();
     addTextFieldsToForm(requestData, formValues);
-    addPicturesToForm(requestData);
+    await addPicturesToForm(requestData);
     await editProduct({
       updatedProduct: requestData,
       productId: params.productId,

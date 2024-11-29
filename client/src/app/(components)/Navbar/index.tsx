@@ -1,7 +1,9 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
+import { AuthenticationService } from "@/auth/auth-service";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
 import { Bell, Menu, Moon, Settings, Sun } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 function Navbar() {
@@ -16,6 +18,8 @@ function Navbar() {
   const toggleDarkMode = () => {
     dispatch(setIsDarkMode(!isDarkMode));
   };
+
+  const userInfo = AuthenticationService.getUser();
 
   return (
     <div
@@ -50,8 +54,16 @@ function Navbar() {
           </div>
           <hr className="w-0 h-7 border-solid border-l border-gray-300 mx-3" />
           <div className="flex cursor-pointer items-center gap-3">
-            <div className="w-9 h-9">image</div>
-            <span className="font-semibold">username</span>
+            {userInfo.photoURL && (
+              <Image
+                src={userInfo.photoURL}
+                height={20}
+                width={20}
+                alt="profile"
+                className="rounded-full box-content"
+              />
+            )}
+            <span className="font-semibold">{userInfo.displayName}</span>
           </div>
           <Link href="settings">
             <Settings

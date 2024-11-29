@@ -74,6 +74,14 @@ class AuthService {
     const authIdToken = await this.getCurrentIdToken();
     return { authIdToken, installationToken };
   }
+
+  public getUser() {
+    return this.firebaseAuth.currentUser;
+  }
+
+  public getUserPhotoUrl() {
+    return this.firebaseAuth.currentUser.photoURL;
+  }
 }
 
 export const AuthenticationService = new AuthService();

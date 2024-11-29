@@ -91,39 +91,15 @@ function Sidebar() {
       {/* MENU ITEMS */}
       <div className="flex-grow mt-8">
         <SidebarLink
-          href="/dashboard"
-          icon={Layout}
-          label="Dashboard"
-          isCollapsed={isSidebarCollapsed}
-        />
-        <SidebarLink
-          href="/inventory"
-          icon={Archive}
-          label="Inventory"
-          isCollapsed={isSidebarCollapsed}
-        />
-        <SidebarLink
-          href="/products"
+          href="/admin/products"
           icon={Clipboard}
           label="Products"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
-          href="/users"
-          icon={User}
-          label="Users"
-          isCollapsed={isSidebarCollapsed}
-        />
-        <SidebarLink
-          href="/settings"
+          href="/admin/settings"
           icon={SlidersHorizontal}
           label="Settings"
-          isCollapsed={isSidebarCollapsed}
-        />
-        <SidebarLink
-          href="/expenses"
-          icon={CircleDollarSign}
-          label="Expenses"
           isCollapsed={isSidebarCollapsed}
         />
       </div>
