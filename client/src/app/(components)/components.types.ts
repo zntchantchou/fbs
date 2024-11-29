@@ -1,6 +1,6 @@
 import { ImageListType } from "react-images-uploading";
 
-type SelectItem = {
+export type SelectItem = {
   label: string;
   value: string;
 };

@@ -102,20 +102,8 @@ export const updateProduct = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  console.log("UPDATE PRODUCT");
   try {
-    if (
-      !req.body.name ||
-      isNaN(req.body.price) ||
-      !req.body.stockQuantity ||
-      !req.body.category ||
-      !req.body.brand ||
-      !req.body.description ||
-      !req.body.model ||
-      !req.body.picturesData
-    ) {
-      res.status(400).json({ error: "Bad Request" });
-      return;
-    }
     const productId = req.params.id;
     const files = req.files as Express.Multer.File[];
     const productToUpdate = await prisma.product.findUnique({
@@ -124,89 +112,94 @@ export const updateProduct = async (
     });
     let newProductPictures;
     let updatedProductPictures;
+    let hasProductBeenUpdated = false;
+    let picturesToDeleteIds: string[] = [];
     if (!productToUpdate) {
+      console.log("NO PRODUCT TO UPDATE");
       res.send(400).json({ message: "could not find product to update" });
       return;
     }
-    const picturesData = JSON.parse(req.body.picturesData) as {
-      index: number;
-      filename: string;
-      id: string;
-    }[];
-    // check presence of foldername
-    const saveFilePromises = files.map((file) =>
-      StorageService.uploadFile(
-        file,
-        productToUpdate?.pictureFolderId as string
-      )
-    );
-    // CREATE PICTURES
-    const uploadedFiles = await Promise.all(saveFilePromises);
-    if (!picturesData.length) {
-      res.status(400).json({ message: "missing data for the pictures" });
-      return;
-    }
-    let productPicturesToCreate: ProductPicture[] = picturesData
-      .filter((data) => !data.id)
-      .map((data, i) => {
-        return {
-          index: data.index, // FIND THE INDEXES FOR EACH PICTURE TO SAVE
-          productId,
-          filename: data.filename,
-          url: uploadedFiles[i].Location as string,
-        } as ProductPicture;
+    if (req.body.picturesData) {
+      const picturesData = JSON.parse(req.body.picturesData) as {
+        index: number;
+        filename: string;
+        id: string;
+      }[];
+      const saveFilePromises = files.map((file) =>
+        StorageService.uploadFile(
+          file,
+          productToUpdate?.pictureFolderId as string
+        )
+      );
+      // CREATE PICTURES
+      const uploadedFiles = await Promise.all(saveFilePromises);
+      if (!picturesData.length) {
+        console.log("NO PICTURE DATA");
+
+        res.status(400).json({ message: "missing data for the pictures" });
+        return;
+      }
+      let productPicturesToCreate: ProductPicture[] = picturesData
+        .filter((data) => !data.id)
+        .map((data, i) => {
+          return {
+            index: data.index, // FIND THE INDEXES FOR EACH PICTURE TO SAVE
+            productId,
+            filename: data.filename,
+            url: uploadedFiles[i].Location as string,
+          } as ProductPicture;
+        });
+      // CREATE PICTURE OBJECTS IN DB
+      newProductPictures = await prisma.productPicture.createMany({
+        data: productPicturesToCreate,
       });
-    // CREATE PICTURE OBJECTS IN DB
-    newProductPictures = await prisma.productPicture.createMany({
-      data: productPicturesToCreate,
-    });
 
-    // DELETE PICTURES
-    let picturesToKeepIds = picturesData
-      .filter((picData) => !!picData.id)
-      .map((picData) => picData.id);
-    let picturesToDeleteIds = [...productToUpdate.pictures]
-      .filter((existingPic) => !picturesToKeepIds.includes(existingPic.id))
-      .map((pic) => pic.id);
+      // DELETE PICTURES
+      let picturesToKeepIds = picturesData
+        .filter((picData) => !!picData.id)
+        .map((picData) => picData.id);
+      picturesToDeleteIds = [...productToUpdate.pictures]
+        .filter((existingPic) => !picturesToKeepIds.includes(existingPic.id))
+        .map((pic) => pic.id);
 
-    console.log("Pictures To delete ", picturesToDeleteIds);
-    if (picturesToDeleteIds.length) {
-      await prisma.productPicture.deleteMany({
-        where: {
-          id: { in: picturesToDeleteIds },
-        },
-      });
-    }
+      console.log("Pictures To delete ", picturesToDeleteIds);
+      if (picturesToDeleteIds.length) {
+        await prisma.productPicture.deleteMany({
+          where: {
+            id: { in: picturesToDeleteIds },
+          },
+        });
+      }
 
-    // UPDATE PICTURES
-    const idsToIndexesMap: { [index: string]: number } = {};
-    for (const pic of picturesData) {
-      if (
-        pic.id &&
-        !picturesToDeleteIds.includes(pic.id) && // filter out deleted pictures
-        !Number.isNaN(pic.index)
-      ) {
-        idsToIndexesMap[pic.id] = pic.index;
+      // UPDATE PICTURES
+      const idsToIndexesMap: { [index: string]: number } = {};
+      for (const pic of picturesData) {
+        if (
+          pic.id &&
+          !picturesToDeleteIds.includes(pic.id) && // filter out deleted pictures
+          !Number.isNaN(pic.index)
+        ) {
+          idsToIndexesMap[pic.id] = pic.index;
+        }
+      }
+      const picturesToUpdate = [...productToUpdate.pictures].filter(
+        (picture) =>
+          picture.index !== idsToIndexesMap[picture.id] &&
+          !picturesToDeleteIds.includes(picture.id) // filter out deleted pictures
+      );
+      if (picturesToUpdate.length) {
+        console.log("picturesToUpdate ", picturesToUpdate);
+        const updatedPromises = picturesToUpdate.map((pic) =>
+          prisma.productPicture.update({
+            where: { id: pic.id },
+            data: { ...pic, index: idsToIndexesMap[pic.id] },
+          })
+        );
+        updatedProductPictures = await Promise.all(updatedPromises);
       }
     }
-    const picturesToUpdate = [...productToUpdate.pictures].filter(
-      (picture) =>
-        picture.index !== idsToIndexesMap[picture.id] &&
-        !picturesToDeleteIds.includes(picture.id) // filter out deleted pictures
-    );
-    if (picturesToUpdate.length) {
-      console.log("picturesToUpdate ", picturesToUpdate);
-      const updatedPromises = picturesToUpdate.map((pic) =>
-        prisma.productPicture.update({
-          where: { id: pic.id },
-          data: { ...pic, index: idsToIndexesMap[pic.id] },
-        })
-      );
-      updatedProductPictures = await Promise.all(updatedPromises);
-    }
-
     // UPDATE PRODUCT ITSELF
-    const updatedProductData = {};
+    const updatedProductData: { [index: string]: number | string } = {};
     const properties = [
       "name",
       "model",
@@ -214,10 +207,31 @@ export const updateProduct = async (
       "price",
       "stockQuantity",
       "description",
-      "categoryId",
+      "category",
     ];
-    console.log("CATEGORY req.category: ", req.body.category);
+    for (const field of properties) {
+      const value = req.body[field];
+      console.log("FOR LOOP");
+      if (!value) continue;
+      if (field === "category") {
+        updatedProductData["categoryId"] = value;
+        continue;
+      }
+      if (["price", "stockQuantity"].includes(field)) {
+        updatedProductData[field] = parseInt(value as string);
+        continue;
+      }
+      updatedProductData[field] = value;
+    }
+    if (Object.values(updatedProductData).length) {
+      await prisma.product.update({
+        where: { id: productToUpdate.id },
+        data: updatedProductData,
+      });
+      hasProductBeenUpdated = true;
+    }
     res.status(200).json({
+      product_updated: hasProductBeenUpdated,
       pictures_created: newProductPictures ? newProductPictures.count : 0,
       pictures_updated: updatedProductPictures
         ? updatedProductPictures.length
@@ -226,6 +240,6 @@ export const updateProduct = async (
     });
   } catch (error) {
     console.error("ERROR : \n", error);
-    res.status(500).json({ msg: "error saving the product" });
+    res.status(500).json({ msg: "error saving the product", error });
   }
 };

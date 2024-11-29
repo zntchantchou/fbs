@@ -30,6 +30,8 @@ interface ProductForm extends FormValues {
   model: string;
 }
 
+type EditProductField = keyof ProductForm;
+
 const emptyFormValues: ProductForm = {
   price: 10,
   name: "",
@@ -50,6 +52,14 @@ function EditProduct({ params }: Props) {
   const [initialFormState, _] = useState(emptyFormValues);
   const [editProduct] = useEditProductMutation();
   const { data: categories } = useGetCategoriesQuery();
+  const getCategoryOptions = () => {
+    return categories
+      ? categories.map((cat) => ({
+          label: cat.name,
+          value: cat.id,
+        }))
+      : [];
+  };
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
   const { data: productData } = useGetProductByIdQuery(params.productId);
   const { register, handleSubmit, formState, setValue, control } =
@@ -57,16 +67,36 @@ function EditProduct({ params }: Props) {
       defaultValues: initialFormState,
       mode: "onChange",
     });
-  const onSubmit: SubmitHandler<ProductForm> = async (formValues) => {
-    if (hasFormError() || !pictures.length) return;
-    const requestData = new FormData();
-    requestData.set("name", formValues.name);
-    requestData.set("price", formValues.price.toString());
-    requestData.set("description", formValues.description);
-    requestData.set("model", formValues.model);
-    requestData.set("brand", formValues.brand);
-    requestData.set("stockQuantity", formValues.stockQuantity.toString());
-    requestData.set("category", formValues.category.value);
+
+  const hasFieldBeenUpdated = (
+    fieldName: EditProductField,
+    formValues: ProductForm
+  ) => {
+    if (fieldName === "category") {
+      return productData.category.id !== formValues.category.value;
+    }
+    return formValues[fieldName] !== productData[fieldName];
+  };
+
+  const addTextFieldsToForm = (form: FormData, values: ProductForm) => {
+    console.log("Add Text fields to form: ");
+    const textFields = [
+      "price",
+      "description",
+      "model",
+      "brand",
+      "stockQuantity",
+    ];
+    for (const field of textFields) {
+      if (hasFieldBeenUpdated(field, values)) {
+        form.set(field, values[field].toString());
+      }
+    }
+    if (hasFieldBeenUpdated("category", values))
+      form.set("category", values.category.value);
+  };
+
+  const addPicturesToForm = async (form: FormData) => {
     if (pictures) {
       for (const pic of pictures) {
         if (pic.file) {
@@ -75,7 +105,7 @@ function EditProduct({ params }: Props) {
           const asBlob = new Blob([new Uint8Array(buffer)], {
             type: pic.file.type,
           });
-          requestData.append("pictureFiles", asBlob, pic.file.name);
+          form.append("pictureFiles", asBlob, pic.file.name);
         }
       }
       const picturesData = [...pictures].map(({ id, index, filename }) => ({
@@ -83,21 +113,28 @@ function EditProduct({ params }: Props) {
         index,
         filename,
       }));
-      requestData.append("picturesData", JSON.stringify(picturesData));
-      await editProduct({
-        updatedProduct: requestData,
-        productId: params.productId,
-      });
+      form.append("picturesData", JSON.stringify(picturesData));
     }
   };
-  // initialize form from stored product
+
+  const onSubmit: SubmitHandler<ProductForm> = async (formValues) => {
+    if (hasFormError() || !pictures.length) return;
+    console.log("FormValues ", formState, formValues);
+    const requestData = new FormData();
+    addTextFieldsToForm(requestData, formValues);
+    addPicturesToForm(requestData);
+    await editProduct({
+      updatedProduct: requestData,
+      productId: params.productId,
+    });
+  };
+
+  // initialize form with stored product
   useEffect(() => {
     if (productData) {
       const keys = Object.keys(emptyFormValues);
       for (const key of keys) {
         if (key === "category") {
-          console.log("KEY", key);
-          console.log("VALUE", productData[key].id);
           setValue(key, {
             label: productData[key].name,
             value: productData[key].id,
@@ -200,10 +237,7 @@ function EditProduct({ params }: Props) {
                 {...field}
                 isSearchable={false}
                 isClearable={false}
-                options={categories.map((c) => ({
-                  label: c.name,
-                  value: c.id,
-                }))}
+                options={getCategoryOptions()}
               />
             )}
           />
@@ -242,4 +276,5 @@ function EditProduct({ params }: Props) {
     </div>
   );
 }
+
 export default EditProduct;
