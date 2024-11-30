@@ -13,6 +13,10 @@ TODAY:
       ✔ Add select to create FORM for category @done(24-11-29 15:42)
       ☐ handle select width
       ☐ handle same name already exists in front-end
+      ☐ handle same name already exists in front-end
+    products:
+      ☐ Add a date sort on created date
+      ☐ add a date library
 
 Input validation: 
   ☐ Add validation middleware in BE

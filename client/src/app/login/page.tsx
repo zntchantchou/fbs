@@ -19,7 +19,7 @@ function Login() {
       if (credentials) {
         const token = await credentials.user.getIdToken();
         if (token) dispatch(setToken(token));
-        router.push("/admin/shop");
+        router.push("/shop");
       } else {
         router.push("/login");
       }
