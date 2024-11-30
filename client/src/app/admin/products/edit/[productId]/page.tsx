@@ -105,7 +105,7 @@ function EditProduct({ params }: Props) {
           const asBlob = new Blob([new Uint8Array(buffer)], {
             type: pic.file.type,
           });
-          form.set("pictureFiles", asBlob, pic.file.name);
+          form.append("pictureFiles", asBlob, pic.file.name);
         }
       }
       const picturesData = [...pictures].map(({ id, index, filename }) => ({

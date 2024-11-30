@@ -10,21 +10,25 @@ function Shop() {
     useGetProductsQuery();
 
   const productsCards = products
-    ? products.map((p) => {
+    ? [...products, ...products, ...products].map((p, i) => {
         return (
           <div
-            key={p.id}
-            className="bg-slate-300 flex flex-wrap justify-center mx-2 rounded-md border-solid border-blue-300 border-2 mb-4"
+            key={i}
+            className="flex flex-wrap justify-center mx-2 rounded-md border-solid border-2 border-gray-200"
           >
-            <div className="flex flex-col h-[23rem] pt-1">
+            <div className="flex flex-col h-[28rem] pt-2 cursor-pointer">
               <Image
                 src={p.pictures[0].url}
                 alt={p.name}
                 height={200}
-                width={250}
-                className="h-[80%]"
+                width={300}
+                className="h-[75%] rounded-md"
               />
-              {p.name}
+              <div className="px-2 py-2 h-[25%] flex flex-col">
+                <span className="font-bold text-lg"> {p.name} </span>
+                <span className="italic"> {p.brand} </span>
+                <span className="text-lg"> {p.price} €</span>
+              </div>
             </div>
           </div>
         );
@@ -35,11 +39,8 @@ function Shop() {
     <>
       <Header name="All Basses" />
       {/* GRID */}
-      {/* <div className="bg-blue-300 w-full h-full grid gap-2 grid-cols-[200px_minmax(600px,_1fr)_100px]">
-       */}
-      <div className="w-full bg-slate-900">
-        <div className="max-w-[100%] bg-gray-200 grid gap-4 grid-cols-[repeat(auto-fit,_minmax(23rem,_1fr))]">
-          {/* <div className="bg-green-500 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"> */}
+      <div className="w-full">
+        <div className="max-w-[100%] grid gap-4 grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))]">
           {productsCards}
         </div>
       </div>

@@ -12,6 +12,7 @@ TODAY:
       ✔ handle product 'normal' fields update @done(24-11-29 15:42)
       ✔ Add select to create FORM for category @done(24-11-29 15:42)
       ☐ handle select width
+      ☐ add publish/unpublish product
       ☐ handle same name already exists in front-end
       ☐ handle same name already exists in front-end
     products:

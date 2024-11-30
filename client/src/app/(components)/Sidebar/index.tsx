@@ -16,6 +16,7 @@ import BassIcon from "@/assets/bass.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 interface SidebarLinkProps {
   href: string;
@@ -33,8 +34,21 @@ const SidebarLink = ({
   const pathname = usePathname();
   const isActive =
     pathname === href || (pathname === "/" && href === "dashboard");
+  const dispatch = useAppDispatch();
+  const toggleSidebar = () => {
+    dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
+  };
+  const isSidebarCollapsed = useAppSelector(
+    (state) => state.global.isSidebarCollapsed
+  );
+
   return (
-    <Link href={href}>
+    <Link
+      href={href}
+      onClick={() => {
+        dispatch(toggleSidebar);
+      }}
+    >
       <div
         className={`cursor-pointer flex items-center ${
           isCollapsed ? "justify-center py-4" : "justify-start px-8 py-4"

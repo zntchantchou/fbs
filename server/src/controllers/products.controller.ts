@@ -126,12 +126,15 @@ export const updateProduct = async (
         filename: string;
         id: string;
       }[];
-      const saveFilePromises = files.map((file) =>
-        StorageService.uploadFile(
+      console.log("FILES ", files);
+
+      const saveFilePromises = files.map((file) => {
+        console.log("SAVE PROMISE START");
+        return StorageService.uploadFile(
           file,
           productToUpdate?.pictureFolderId as string
-        )
-      );
+        );
+      });
       // CREATE PICTURES
       const uploadedFiles = await Promise.all(saveFilePromises);
       if (!picturesData.length) {
@@ -140,6 +143,7 @@ export const updateProduct = async (
         res.status(400).json({ message: "missing data for the pictures" });
         return;
       }
+      console.log("uploadedFiles ", uploadedFiles);
       let productPicturesToCreate: ProductPicture[] = picturesData
         .filter((data) => !data.id)
         .map((data, i) => {
