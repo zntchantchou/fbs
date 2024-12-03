@@ -1,27 +1,30 @@
 TODAY:
   MODELS:
     product: 
-      ✔ add 'description' field FE @done(24-11-22 16:20)
-      ✔ add 'description' field BE @done(24-11-22 16:20)
-      ✔ add 'model' field FE @done(24-11-22 16:20)
-      ✔ add 'model' field BE @done(24-11-22 16:20)
-      ✔ add 'Brand' field to front-end @done(24-11-22 16:20)
-      ✔ add 'Brand' field to back-end @done(24-11-22 16:20)
-      ✔ add 'unique' constrain to field to field name
-      ✔ adds userId to product @done(24-11-26 14:13)
-      ✔ handle product 'normal' fields update @done(24-11-29 15:42)
-      ✔ Add select to create FORM for category @done(24-11-29 15:42)
       ☐ handle select width
       ☐ add publish/unpublish product
       ☐ handle same name already exists in front-end
       ☐ handle same name already exists in front-end
+      DX:
+        ☐ Create a seed process
+      UI: 
+        ✔ [BUG] collapsed navbar must now open on link click @done(24-11-30 21:25)
+        ☐ use this model to create small sidebar for Lg and full-screen for mobile https://www.lequipe.fr/Recherche/
+        ☐ build a custom btn
+        ☐ move gallery to a component to receive products
+        ☐ add not found page for whole website 
+    Cart: 
+      ☐ Create cart page
+      ☐ find inspiring list of items
+      ☐ implement quantity with stock validation
+      ☐ implement fake payment (add loader)
+
     products:
       ☐ Add a date sort on created date
       ☐ add a date library
 
 Input validation: 
   ☐ Add validation middleware in BE
-  ✔ Add form validation library FE @done(24-11-29 10:29)
 
 Api actions needed:
   Cart:
@@ -45,6 +48,17 @@ Api actions needed:
     ☐ Footer 
     
   DONE:
+    ✔ Add form validation library FE @done(24-11-29 10:29)
+    ✔ add 'description' field FE @done(24-11-22 16:20)
+    ✔ add 'description' field BE @done(24-11-22 16:20)
+    ✔ add 'model' field FE @done(24-11-22 16:20)
+    ✔ add 'model' field BE @done(24-11-22 16:20)
+    ✔ add 'Brand' field to front-end @done(24-11-22 16:20)
+    ✔ add 'Brand' field to back-end @done(24-11-22 16:20)
+    ✔ add 'unique' constrain to field to field name
+    ✔ adds userId to product @done(24-11-26 14:13)
+    ✔ handle product 'normal' fields update @done(24-11-29 15:42)
+    ✔ Add select to create FORM for category @done(24-11-29 15:42)
     ✔ get categories @done(24-11-19 15:41)
     ✔ get products (to view) @done(24-11-21 23:32)
     ✔ adds product pictures to getProducts

@@ -4,6 +4,7 @@ import Navbar from "@/app/(components)/Navbar";
 import Sidebar from "@/app/(components)/Sidebar";
 import { useAppSelector } from "../redux";
 import { useEffect } from "react";
+import Footer from "../(components)/Footer/Footer";
 
 function ShopContainer({ children }: { children: React.ReactNode }) {
   const isSidebarCollapsed = useAppSelector(
@@ -19,6 +20,7 @@ function ShopContainer({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.add("light");
     }
   });
+  const bgClass = isDarkMode ? "bg-gray-200" : "bg-slate-50";
   // const contentWidth = isSidebarCollapsed ? "w-[100vw] md:w-16" : "w-[100vw] sm:w-64";
   return (
     <div
@@ -30,10 +32,11 @@ function ShopContainer({ children }: { children: React.ReactNode }) {
       <div className="h-[100vh] w-full">
         <Navbar></Navbar>
         <main
-          className={`flex flex-col py-5 px-9 md:pl-32 h-[94vh] overflow-auto ${mainPaddingLeft}`}
+          className={`flex flex-col ${bgClass} py-5 px-9 md:pl-32 h-[94vh] overflow-auto ${mainPaddingLeft}`}
         >
           <div>{children}</div>
         </main>
+        <Footer />
       </div>
     </div>
   );

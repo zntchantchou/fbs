@@ -15,7 +15,7 @@ import {
 import BassIcon from "@/assets/bass.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
 interface SidebarLinkProps {
@@ -36,7 +36,7 @@ const SidebarLink = ({
     pathname === href || (pathname === "/" && href === "dashboard");
   const dispatch = useAppDispatch();
   const toggleSidebar = () => {
-    dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
+    if (!isSidebarCollapsed) dispatch(setIsSidebarCollapsed(true));
   };
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed
@@ -67,15 +67,19 @@ const SidebarLink = ({
 };
 function Sidebar() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed
   );
   const toggleSidebar = () => {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
   };
-
+  const onLogoClick = () => {
+    toggleSidebar();
+    router.push("/shop");
+  };
   const panelWidth = isSidebarCollapsed ? "w-0 md:w-16" : "w-[100vw] sm:w-64";
-  const sidebarClassnames = `fixed flex flex-col transition-all bg-white duration-300 overflow-hidden h-full shadow-md z-40 ${panelWidth}`;
+  const sidebarClassnames = `fixed flex flex-col transition-all bg-white duration-300 overflow-hidden h-full border-r-solid border-r-[.2rem] border-r-slate-200 z-40 ${panelWidth}`;
   return (
     <div className={sidebarClassnames}>
       {/* LOGO */}
@@ -84,7 +88,13 @@ function Sidebar() {
           isSidebarCollapsed ? "px-5" : "px-8"
         }`}
       >
-        <Image src={BassIcon} alt="website icon" height={46} />
+        <Image
+          src={BassIcon}
+          alt="website icon"
+          height={46}
+          onClick={onLogoClick}
+          className="cursor-pointer rounded-full"
+        />
         <h1
           className={`${
             isSidebarCollapsed ? "hidden" : "block"

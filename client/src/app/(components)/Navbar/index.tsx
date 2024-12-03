@@ -23,7 +23,7 @@ function Navbar() {
 
   return (
     <div
-      className={`flex items-center w-full justify-between h-[6vh] px-4 border-b-2 border-b-gray-200 ${mainPaddingLeft}`}
+      className={`flex items-center w-full justify-between h-[6vh] px-4 ${mainPaddingLeft}`}
     >
       {/* LEFT SIDE */}
       <div className="w-[5%] flex justify-between items-center gap-5">
@@ -63,7 +63,7 @@ function Navbar() {
           </div>
           <hr className="w-0 h-7 border-solid border-l border-gray-300 mx-3" />
           <div className="flex cursor-pointer items-center gap-3">
-            {userInfo.photoURL && (
+            {userInfo && userInfo.photoURL && (
               <Image
                 src={userInfo.photoURL}
                 height={20}
@@ -72,7 +72,9 @@ function Navbar() {
                 className="rounded-full box-content"
               />
             )}
-            <span className="font-semibold">{userInfo.displayName}</span>
+            <span className="font-semibold">
+              {userInfo && userInfo.displayName}
+            </span>
           </div>
           <Link href="settings">
             <Settings
