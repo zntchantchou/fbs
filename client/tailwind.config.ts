@@ -11,6 +11,7 @@ const baseColors = [
   "indigo",
   "purple",
   "pink",
+  "slate",
 ];
 
 const shadeMapping = {

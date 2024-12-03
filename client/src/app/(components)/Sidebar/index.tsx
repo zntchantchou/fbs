@@ -3,20 +3,15 @@
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSidebarCollapsed } from "@/state";
 import {
-  Archive,
-  CircleChevronLeftIcon,
-  CircleDollarSign,
+  CircleXIcon,
   Clipboard,
-  Layout,
   LucideIcon,
   SlidersHorizontal,
-  User,
 } from "lucide-react";
 import BassIcon from "@/assets/bass.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 
 interface SidebarLinkProps {
   href: string;
@@ -75,7 +70,7 @@ function Sidebar() {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
   };
   const onLogoClick = () => {
-    toggleSidebar();
+    if (!isSidebarCollapsed) toggleSidebar();
     router.push("/shop");
   };
   const panelWidth = isSidebarCollapsed ? "w-0 md:w-16" : "w-[100vw] sm:w-64";
@@ -107,7 +102,7 @@ function Sidebar() {
             className="px-3 py-3 bg-gray-100 rounded-full hover:bg-blue-100"
             onClick={toggleSidebar}
           >
-            <CircleChevronLeftIcon className="w-6 h-6" />
+            <CircleXIcon className="w-6 h-6" />
           </button>
         )}
       </div>

@@ -2,7 +2,14 @@
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { AuthenticationService } from "@/auth/auth-service";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
-import { Bell, Menu, Moon, Settings, Sun } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  Moon,
+  Settings,
+  ShoppingBasketIcon,
+  Sun,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,11 +29,9 @@ function Navbar() {
   const userInfo = AuthenticationService.getUser();
 
   return (
-    <div
-      className={`flex items-center w-full justify-between h-[6vh] px-4 ${mainPaddingLeft}`}
-    >
+    <div className={`flex items-center w-full h-[6vh] px-4 ${mainPaddingLeft}`}>
       {/* LEFT SIDE */}
-      <div className="w-[5%] flex justify-between items-center gap-5">
+      <div className="w-[5rem] flex items-center gap-5">
         <button
           className="px-3 py-3 bg-gray-100 rounded-full hover:bg-blue-100"
           onClick={toggleSidebar}
@@ -34,7 +39,7 @@ function Navbar() {
           <Menu className="w-4 h-4" />
         </button>
       </div>
-      <div className="w-[75%]">
+      <div className="w-[100%] invisible md:visible">
         <input
           type="text"
           name="search"
@@ -44,8 +49,8 @@ function Navbar() {
         />
       </div>
       {/* RIGHT SIDE */}
-      <div className="flex justify-between items-center gap-5 w-[20%]">
-        <div className="hidden md:flex justify-between items-center gap-5">
+      <div className="flex justify-end items-center gap-5 w-[60%] min-w-[200px]">
+        <div className="flex justify-between items-center gap-5">
           <div>
             <button onClick={toggleDarkMode}>
               {isDarkMode ? (
@@ -55,14 +60,25 @@ function Navbar() {
               )}
             </button>
           </div>
+          <Link href="settings">
+            <Settings
+              className="cursor-pointer text-gray-500"
+              size={24}
+            ></Settings>
+          </Link>
           <div className="relative">
             <Bell className="cursor-pointer text-gray-500" size={24} />
             <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-[0.4rem] leading-none font-semibold text-red-100 bg-red-400 rounded-full">
               1
             </span>
           </div>
-          <hr className="w-0 h-7 border-solid border-l border-gray-300 mx-3" />
-          <div className="flex cursor-pointer items-center gap-3">
+          <div>
+            <ShoppingBasketIcon
+              className="cursor-pointer text-gray-500"
+              size={24}
+            />
+          </div>
+          <div className="flex cursor-pointer items-center">
             {userInfo && userInfo.photoURL && (
               <Image
                 src={userInfo.photoURL}
@@ -72,16 +88,10 @@ function Navbar() {
                 className="rounded-full box-content"
               />
             )}
-            <span className="font-semibold">
+            <span className="ml-2 font-semibold invisible lg:visible w-0 lg:w-[100%]">
               {userInfo && userInfo.displayName}
             </span>
           </div>
-          <Link href="settings">
-            <Settings
-              className="cursor-pointer text-gray-500"
-              size={24}
-            ></Settings>
-          </Link>
         </div>
       </div>
     </div>

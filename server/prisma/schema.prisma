@@ -22,8 +22,7 @@ model UserSettings {
 
 model Cart {
   id        String     @id @default(uuid())
-  userId    String
-  darkmode  Boolean
+  userId    String     @unique
   items     CartItem[]
   timestamp DateTime   @default(now())
 }
@@ -41,7 +40,6 @@ model CartItem {
   cartId    String
   quantity  Int
   timestamp DateTime
-  // color String
   cart      Cart     @relation(fields: [cartId], references: [id])
 }
 
