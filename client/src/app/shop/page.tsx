@@ -3,20 +3,26 @@ import { AuthenticationService } from "@/auth/auth-service";
 import { useGetProductsQuery } from "@/state/api";
 import Header from "../(components)/Header";
 import Image from "next/image";
-import { Heart, ShoppingBagIcon, ShoppingBasket } from "lucide-react";
+import { Heart, ShoppingBasket } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { addCartItem } from "@/state";
 
 function Shop() {
   console.log("Auth at Shop: ", AuthenticationService.firebaseAuth.currentUser);
   const { data: products, isLoading: isLoadingProducts } =
     useGetProductsQuery();
   const router = useRouter();
+  const dispatch = useDispatch();
+  const onAddToCart = () => {
+    dispatch(addCartItem());
+  };
   const productsCards = products
     ? [...products, ...products, ...products].map((p, i) => {
         return (
           <div
             key={i}
-            className="flex flex-wrap justify-center mx-2 rounded-md border-solid border-2 border-gray-200"
+            className="flex flex-wrap justify-center mx-2 rounded-md"
           >
             <div className="flex flex-col h-[23rem]">
               <Image
@@ -43,7 +49,10 @@ function Shop() {
                     className="text-slate-100 font-bold bg-slate-900 rounded-full hover:bg-slate-700 cursor-pointer"
                   />
                   {/* </div> */}
-                  <button className="px-2 box-content bg-slate-900 text-white rounded-full hover:bg-slate-700 flex items-center ">
+                  <button
+                    onClick={() => onAddToCart()}
+                    className="px-2 box-content bg-slate-900 text-white rounded-full hover:bg-slate-700 flex items-center "
+                  >
                     add to cart <ShoppingBasket height={20} />
                   </button>
                 </div>

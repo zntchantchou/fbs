@@ -1,7 +1,9 @@
 "use client";
+import { addCartItem } from "@/state";
 import { useGetProductByIdQuery } from "@/state/api";
 import { ShoppingBasket } from "lucide-react";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
 
 type Props = {
   params: { productId: string };
@@ -9,6 +11,8 @@ type Props = {
 
 function ViewProduct({ params }: Props) {
   const { data, error, isLoading } = useGetProductByIdQuery(params.productId);
+  const dispatch = useDispatch();
+
   const labelClassnames = "block my-2 text-sm font-medium text-gray-700";
   const images = data
     ? data.pictures.map((pic, i) => (
@@ -22,6 +26,10 @@ function ViewProduct({ params }: Props) {
         />
       ))
     : [];
+  const onAddToCart = () => {
+    console.log("[ViewProduct] onAddtoCart");
+    dispatch(addCartItem());
+  };
   if (error) {
     return <div>Error: {JSON.stringify(error)}</div>;
   }
@@ -52,7 +60,10 @@ function ViewProduct({ params }: Props) {
               <label className={labelClassnames}>Stock quantity</label>
               <div className="font-bold">{data.stockQuantity}</div>
               <div className="w-[100%] flex justify-center">
-                <button className="px-2 py-3 sm:py-2 mt-4 w-[70vw] sm:w-[fit-content] flex justify-center box-content bg-slate-900 text-white rounded-full hover:bg-slate-700 items-center">
+                <button
+                  onClick={onAddToCart}
+                  className="px-2 py-3 sm:py-2 mt-4 w-[70vw] sm:w-[fit-content] flex justify-center box-content bg-slate-900 text-white rounded-full hover:bg-slate-700 items-center"
+                >
                   <span>add to cart</span> <ShoppingBasket height={20} />
                 </button>
               </div>
