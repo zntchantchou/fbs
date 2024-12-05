@@ -106,7 +106,7 @@ function Cart() {
     </div>
   );
   const emptyCartContent = (
-    <div className="font-bold bg-blue-100 h-[25rem] flex flex-col items-center justify-center w-[100%] sm:w-[90%] md:w-[80%] lg:w-[60%]">
+    <div className="font-bold bg-slate-300 h-[25rem] flex flex-col items-center justify-center w-[100%] sm:w-[90%] md:w-[80%] lg:w-[60%]">
       <ShoppingBasketIcon height={20} className="mb-4" />
       <p className="text-lg">Your cart is currently empty.</p>
     </div>
@@ -114,7 +114,7 @@ function Cart() {
   return (
     <div>
       <Header name="My cart" />
-      <div className="w-full h-full flex flex-col items-center min-w-[300px]">
+      <div className="w-full py-6 h-full flex flex-col items-center min-w-[300px] justify-center">
         {/* CONTAINER FOR CENTERING */}
         {!!storeCartItems.length ? cartContent : emptyCartContent}
       </div>

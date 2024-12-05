@@ -11,6 +11,7 @@ import { api } from "@/state/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import authReducer from "@/state/auth";
 import cartReducer from "@/state/cart";
+import wishlistReducer from "@/state/wishlist";
 import {
   persistStore,
   persistReducer,
@@ -56,6 +57,7 @@ const rootReducer = combineReducers({
   global: globalReducer,
   auth: authReducer,
   cart: cartReducer,
+  wishlist: wishlistReducer,
   [api.reducerPath]: api.reducer,
 });
 

@@ -3,6 +3,7 @@ TODAY:
     ☐ Add fake payment 
     ☐ Add order controller
     ☐ Add seed with local pictures
+  
   MODELS:
     product: 
       ☐ handle select width
@@ -12,6 +13,7 @@ TODAY:
       DX:
         ☐ Update seed process with local images
       UI: 
+        ☐ top of mobile sidenav must be similar to navbar in height and structure
         ✔ [BUG] collapsed navbar must now open on link click @done(24-11-30 21:25)
         ☐ use this model to create small sidebar for Lg and full-screen for mobile https://www.lequipe.fr/Recherche/
         ☐ build a custom btn

@@ -4,6 +4,7 @@ import { useGetProductByIdQuery } from "@/state/api";
 import { addItemToCart } from "@/state/cart";
 import { ShoppingBasket } from "lucide-react";
 import { useDispatch } from "react-redux";
+import Header from "@/app/(components)/Header";
 
 type Props = {
   params: { productId: string };
@@ -43,7 +44,8 @@ function ViewProduct({ params }: Props) {
   if (product)
     return (
       <>
-        <div className="w-full h-full flex justify-center min-w-[300px] overflow-hidden">
+        <Header name="Product" />
+        <div className="w-full h-full py-6 flex justify-center min-w-[300px] overflow-hidden">
           <div className="flex flex-col items-start sm:flex-row sm:w-[90%] md:w-[80%] lg:w-[60%]">
             <div className="h-full flex flex-col min-w-[300px]">
               {!!images.length && images}

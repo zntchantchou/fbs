@@ -7,6 +7,11 @@ import { Heart, ShoppingBasket } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "@/state/cart";
+import {
+  addItemToWishlist,
+  productIdsInWishlistSelector,
+} from "@/state/wishlist";
+import { useAppSelector } from "../redux";
 
 function Shop() {
   console.log("Auth at Shop: ", AuthenticationService.firebaseAuth.currentUser);
@@ -17,17 +22,31 @@ function Shop() {
   const onAddToCart = (product: Product) => {
     dispatch(addItemToCart(product));
   };
+  const onAddToWishlist = (product: Product) => {
+    dispatch(addItemToWishlist(product));
+  };
+  const getIconWishlistColor = (productId: string) => {
+    return isInWishList(productId) ? "#ff795e" : "white";
+  };
+  const wishListProductIds = useAppSelector(productIdsInWishlistSelector);
+  const isInWishList = (productId: string) =>
+    wishListProductIds.includes(productId);
   const productsCards = products
     ? [...products, ...products, ...products].map((p, i) => {
         return (
           <div key={i} className="flex flex-wrap justify-center mx-2">
             <div className="flex flex-col h-[23rem] relative">
               <div className="h-[75%] cursor-pointer relative">
-                <div className="bg-slate-100 w-[2.5rem] h-[2.5rem] rounded-full hover:bg-slate-700 flex items-center justify-center absolute bottom-1 right-1">
+                <div
+                  onClick={() => onAddToWishlist(p)}
+                  className="bg-slate-100 w-[2.5rem] h-[2.5rem] rounded-full hover:bg-slate-300 flex items-center justify-center absolute bottom-1 right-1"
+                >
                   <Heart
+                    color={getIconWishlistColor(p.id)}
+                    fill={getIconWishlistColor(p.id)}
                     width={25}
                     height={25}
-                    className="text-slate-900 font-bold bg-slate-100 rounded-full hover:bg-slate-800 cursor-pointer"
+                    className="text-slate-900 font-bold rounded-full cursor-pointer"
                   />
                 </div>
                 <Image
@@ -66,7 +85,7 @@ function Shop() {
     <>
       <Header name="All Basses" />
       {/* GRID */}
-      <div className="w-full flex justify-center ">
+      <div className="w-full flex justify-center py-6">
         <div className="sm:w-[90%] md:w-[80%] lg:w-[60%] max-w-[100%] grid gap-4 grid-cols-[repeat(auto-fit,_minmax(230px,_1fr))]">
           {productsCards}
         </div>
