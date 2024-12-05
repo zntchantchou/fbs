@@ -10,6 +10,7 @@ import globalReducer from "@/state";
 import { api } from "@/state/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import authReducer from "@/state/auth";
+import cartReducer from "@/state/cart";
 import {
   persistStore,
   persistReducer,
@@ -54,6 +55,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   global: globalReducer,
   auth: authReducer,
+  cart: cartReducer,
   [api.reducerPath]: api.reducer,
 });
 

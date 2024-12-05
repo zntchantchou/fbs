@@ -14,7 +14,7 @@ function Navbar() {
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed
   );
-  const newCartItems = useAppSelector((state) => state.global.newCartItems);
+  const newCartItems = useAppSelector((state) => state.cart.totalNewItems);
   const toggleSidebar = () => {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
   };
@@ -29,7 +29,9 @@ function Navbar() {
   const userInfo = AuthenticationService.getUser();
 
   return (
-    <div className={`flex items-center w-full h-[6vh] px-4 ${mainPaddingLeft}`}>
+    <div
+      className={`flex items-center w-full h-[6vh] px-4 ${mainPaddingLeft} bg-gray-200`}
+    >
       {/* LEFT SIDE */}
       <div className="w-[5rem] flex items-center gap-5">
         <button
@@ -45,7 +47,7 @@ function Navbar() {
           name="search"
           id="search"
           placeholder="what are you looking for ?"
-          className="w-full hidden md:block text-slate-800 max-w-2xl border-gray-400 border-2 rounded-md p-2"
+          className="w-full hidden md:block text-slate-800 max-w-2xl outline-none rounded-md p-2"
         />
       </div>
       {/* RIGHT SIDE */}
@@ -60,12 +62,12 @@ function Navbar() {
               )}
             </button>
           </div>
-          <Link href="settings">
+          {/* <Link href="settings">
             <Settings
               className="cursor-pointer text-gray-500"
               size={24}
             ></Settings>
-          </Link>
+          </Link> */}
           <div className="relative" onClick={onCartClick}>
             <ShoppingBasketIcon
               className="cursor-pointer text-gray-500"

@@ -1,12 +1,16 @@
 TODAY:
+    ☐ Move heart icon on to the image
+    ☐ Add fake payment 
+    ☐ Add order controller
+    ☐ Add seed with local pictures
   MODELS:
     product: 
       ☐ handle select width
-      ☐ add publish/unpublish product
       ☐ handle same name already exists in front-end
       ☐ handle same name already exists in front-end
+      ✘ add publish/unpublish product @cancelled(24-12-05 12:40)
       DX:
-        ☐ Create a seed process
+        ☐ Update seed process with local images
       UI: 
         ✔ [BUG] collapsed navbar must now open on link click @done(24-11-30 21:25)
         ☐ use this model to create small sidebar for Lg and full-screen for mobile https://www.lequipe.fr/Recherche/
@@ -14,14 +18,16 @@ TODAY:
         ☐ move gallery to a component to receive products
         ☐ add not found page for whole website 
     Cart: 
-      ☐ Create cart page
-      ☐ find inspiring list of items
+      ✔ find inspiring list of items (ASOS) @done(24-12-04 13:14)
+      ✔ Create cart page @done(24-12-04 13:14)
+      ✔ Add a cart reducer @done(24-12-04 13:14)
+      ☐ Only display payment section when there is at least 1 item in cart
+      ☐ implement cart page responsive 
       ☐ implement quantity with stock validation
       ☐ implement fake payment (add loader)
-
-    products:
-      ☐ Add a date sort on created date
-      ☐ add a date library
+products:
+    ☐ Add a date sort on created date
+    ☐ add a date library
 
 Input validation: 
   ☐ Add validation middleware in BE

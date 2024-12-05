@@ -7,7 +7,6 @@ export interface Product {
   description: string;
   name: string;
   price: number;
-  rating?: number;
   model: string;
   brand: string;
   pictures: ProductPicture[];
