@@ -6,6 +6,8 @@ import morgan from "morgan";
 import cors from "cors";
 import productRoutes from "./routes/product.routes.ts";
 import categoryRoutes from "./routes/category.routes.ts";
+import orderRoutes from "./routes/orders.routes.ts";
+import { authMiddleware } from "middleware/auth.middleware.ts";
 
 // CONFIG
 dotenv.config();
@@ -23,6 +25,7 @@ app.use(cors());
 // ROUTES
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
+app.use("/orders", authMiddleware(), orderRoutes);
 
 // SERVER
 const port = Number(process.env.PORT) || 3001;

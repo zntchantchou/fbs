@@ -5,6 +5,8 @@ import Header from "@/app/(components)/Header";
 import PageLoader from "@/app/(components)/PageLoader";
 import { useAppSelector } from "@/app/redux";
 import ProductService from "@/services/product-service";
+import { emptyCart } from "@/state";
+import { useCreateOrderMutation } from "@/state/api";
 import {
   deleteCartItem,
   setItemQuantity,
@@ -20,8 +22,12 @@ import Select from "react-select";
 
 function Cart() {
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const [isWaitingForPayment, setIsWaitingForPayment] =
     useState<boolean>(false);
+
+  const [createOrderFn, { data: orderData, error }] = useCreateOrderMutation();
   const storeCartItems = useAppSelector((state) => state.cart.items);
   const quantityOptions: SelectItem[] = Array(10)
     .fill(null)
@@ -35,8 +41,32 @@ function Cart() {
   const updateQuantity = (quantity: number, productId: string) => {
     dispatch(setItemQuantity({ quantity, productId }));
   };
+  useEffect(() => {
+    if (orderData) {
+      console.log("[USE EFFECT] Order data", orderData);
+      dispatch(emptyCart());
+      setIsWaitingForPayment(false);
+      router.push("/shop/orders");
+    }
+  }, [orderData, router, error, dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      console.log("[USE EFFECT] error", error);
+      setIsWaitingForPayment(false);
+    }
+  }, [error]);
+
+  const onPay = () => {
+    console.log("[onPay]");
+    setIsWaitingForPayment(true);
+    const items = storeCartItems.map((i) => ({
+      productId: i.productId,
+      quantity: i.quantity,
+    }));
+    createOrderFn({ items });
+  };
   const totalPrice = useAppSelector(totalItemsPriceSelector);
-  const router = useRouter();
   useEffect(() => {
     dispatch(setNewItemsToZero());
   }, [dispatch]);
@@ -103,16 +133,7 @@ function Cart() {
         </div>
         <button
           className="mt-2 py-3 px-3 bg-green-400 text-white rounded w-full hover:bg-green-500 flex justify-center items-center"
-          onClick={() => {
-            console.log("PAIEMENT");
-            setIsWaitingForPayment(true);
-            console.log("WAITING FOR PAYMENT");
-            setTimeout(() => {
-              console.log("PAYMENT DONE");
-              setIsWaitingForPayment(false);
-              router.push("/shop/orders");
-            }, 4000);
-          }}
+          onClick={onPay}
         >
           PAYMENT
         </button>

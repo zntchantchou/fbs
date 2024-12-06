@@ -13,6 +13,13 @@ export interface Product {
   stockQuantity: number;
 }
 
+export interface OrderItem {
+  productId: string;
+  quantity: number;
+}
+export interface Order {
+  items: OrderItem[];
+}
 export interface ProductPicture {
   id: string;
   index: number;
@@ -60,7 +67,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Products", "Categories"],
+  tagTypes: ["Products", "Categories", "Orders"],
   reducerPath: "api",
   endpoints: (build) => ({
     getProducts: build.query<Product[], string | void>({
@@ -105,6 +112,16 @@ export const api = createApi({
       },
       invalidatesTags: ["Products"],
     }),
+    createOrder: build.mutation<Order, Order>({
+      query: (order) => {
+        return {
+          method: "POST",
+          url: "/orders",
+          body: order,
+        };
+      },
+      invalidatesTags: ["Orders"],
+    }),
   }),
 });
 
@@ -114,4 +131,5 @@ export const {
   useEditProductMutation,
   useGetCategoriesQuery,
   useCreateProductMutation,
+  useCreateOrderMutation,
 } = api;

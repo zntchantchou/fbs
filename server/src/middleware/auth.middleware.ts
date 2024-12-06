@@ -23,7 +23,7 @@ export async function authMiddlewareFn(
     console.error(
       "---------- [authMiddleware] Error (INVALID TOKEN): ----------- \n"
     );
-    res.status(401).json({ err });
+    res.status(401).json({ error: "Your token has expired" });
   }
 }
 
