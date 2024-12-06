@@ -1,15 +1,21 @@
-TODAY:
-    ☐ Move heart icon on to the image
-    ☐ Add fake payment 
-    ☐ Add order controller
-    ☐ Add seed with local pictures
-  
+  TODAY:
+      ☐ Add fake payment 
+      ☐ Add order controller
+      UI: 
+        ✔ create ProductCard component and use in wishlist and shop @done(24-12-06 10:34)
+        ✔ fix heart icon on image (borders) @done(24-12-06 10:13)
+        ✔ fix pictures @ product/:id @wishlist @cart @done(24-12-06 10:34)
+        ☐ Fix payment 
+        ☐ implement click outside 
   MODELS:
     product: 
       ☐ handle select width
       ☐ handle same name already exists in front-end
       ☐ handle same name already exists in front-end
       ✘ add publish/unpublish product @cancelled(24-12-05 12:40)
+      orders: 
+        ☐ add order page
+        ☐ add order/:id = order details page with orderItems (quantity / price)
       DX:
         ☐ Update seed process with local images
       UI: 
@@ -56,6 +62,8 @@ Api actions needed:
     ☐ Footer 
     
   DONE:
+    ✔ Move heart icon on to the image @done(24-12-06 10:07)
+    ✔ Add seed with local pictures @done(24-12-06 10:07)
     ✔ Add form validation library FE @done(24-11-29 10:29)
     ✔ add 'description' field FE @done(24-11-22 16:20)
     ✔ add 'description' field BE @done(24-11-22 16:20)

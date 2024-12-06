@@ -63,13 +63,14 @@ model Product {
 }
 
 model OrderItem {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   productId String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  price     Float
+  timestamp DateTime @default(now())
   quantity  Int
   orderId   String
-  // color String
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id])
 }
 
 model Order {

@@ -59,7 +59,7 @@ function Login() {
         <div className="w-full text-center p-2 text-xl">Se connecter</div>
         {/* CONTENT */}
         <div className="h-fit flex flex-col w-full pt-2">
-          <input
+          {/* <input
             type="text"
             id="email"
             placeholder="email"
@@ -71,7 +71,7 @@ function Login() {
             placeholder="mot de passe"
             className={inputClassnames}
           />
-          <LoginButton variant="default" text="continuer" />
+          <LoginButton variant="default" text="continuer" /> */}
           <LoginButton
             variant="light"
             text="continuer avec google"

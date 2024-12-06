@@ -38,7 +38,6 @@ export const cartSlice = createSlice({
           quantity: existingProduct.quantity + 1,
         };
         state.items[productIndex] = updatedItem;
-        state.totalNewItems += 1;
         return;
       }
       state.items = [

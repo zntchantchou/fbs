@@ -2,7 +2,9 @@
 
 import { SelectItem } from "@/app/(components)/components.types";
 import Header from "@/app/(components)/Header";
+import PageLoader from "@/app/(components)/PageLoader";
 import { useAppSelector } from "@/app/redux";
+import ProductService from "@/services/product-service";
 import {
   deleteCartItem,
   setItemQuantity,
@@ -11,12 +13,15 @@ import {
 } from "@/state/cart";
 import { ShoppingBasketIcon, X } from "lucide-react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Select from "react-select";
 
 function Cart() {
   const dispatch = useDispatch();
+  const [isWaitingForPayment, setIsWaitingForPayment] =
+    useState<boolean>(false);
   const storeCartItems = useAppSelector((state) => state.cart.items);
   const quantityOptions: SelectItem[] = Array(10)
     .fill(null)
@@ -31,7 +36,7 @@ function Cart() {
     dispatch(setItemQuantity({ quantity, productId }));
   };
   const totalPrice = useAppSelector(totalItemsPriceSelector);
-
+  const router = useRouter();
   useEffect(() => {
     dispatch(setNewItemsToZero());
   }, [dispatch]);
@@ -48,7 +53,7 @@ function Cart() {
             className="w-[100%] h-[100%]"
             width={100}
             height={100}
-            src={item.product.pictures[0].url}
+            src={ProductService.formatPictureUrl(item.product.pictures[0].url)}
             alt={item.product.name}
           />
         </div>
@@ -98,7 +103,16 @@ function Cart() {
         </div>
         <button
           className="mt-2 py-3 px-3 bg-green-400 text-white rounded w-full hover:bg-green-500 flex justify-center items-center"
-          onClick={() => console.log("PAIEMENT")}
+          onClick={() => {
+            console.log("PAIEMENT");
+            setIsWaitingForPayment(true);
+            console.log("WAITING FOR PAYMENT");
+            setTimeout(() => {
+              console.log("PAYMENT DONE");
+              setIsWaitingForPayment(false);
+              router.push("/shop/orders");
+            }, 4000);
+          }}
         >
           PAYMENT
         </button>
@@ -111,9 +125,10 @@ function Cart() {
       <p className="text-lg">Your cart is currently empty.</p>
     </div>
   );
+  if (isWaitingForPayment) return <PageLoader text="processing payment..." />;
   return (
     <div>
-      <Header name="My cart" />
+      <Header name="My Cart" />
       <div className="w-full py-6 h-full flex flex-col items-center min-w-[300px] justify-center">
         {/* CONTAINER FOR CENTERING */}
         {!!storeCartItems.length ? cartContent : emptyCartContent}
