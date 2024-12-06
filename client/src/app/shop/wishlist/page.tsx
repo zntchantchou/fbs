@@ -22,7 +22,7 @@ function Wishlist() {
 
   const itemsCards =
     wishlistItems.length > 0
-      ? [...wishlistItems, ...wishlistItems, ...wishlistItems].map((p, i) => {
+      ? wishlistItems.map((p, i) => {
           return (
             <div key={i} className="flex flex-wrap justify-center mx-2">
               <div className="flex flex-col h-[23rem] relative">

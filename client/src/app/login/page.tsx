@@ -5,7 +5,7 @@ import Image from "next/image";
 import BassIcon from "@/assets/bass.svg";
 import GoogleIcon from "@/assets/google.png";
 import { useRouter } from "next/navigation";
-import { AuthenticationService } from "@/auth/auth-service";
+import { AuthenticationService } from "@/services/auth-service";
 import { setToken } from "@/state/auth";
 import { useAppDispatch } from "@/app/redux";
 

@@ -15,6 +15,7 @@ export async function authMiddlewareFn(
     const auth = AuthService.getAuthentication();
     const decodedToken = await auth.verifyIdToken(req.headers.token as string);
     req.user = { ...decodedToken };
+    console.log("[authmiddleware] user: \n", decodedToken);
     if (!decodedToken) throw new Error("No token!");
     else next();
   } catch (err) {

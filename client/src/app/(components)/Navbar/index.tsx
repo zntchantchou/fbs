@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { AuthenticationService } from "@/auth/auth-service";
+import { AuthenticationService } from "@/services/auth-service";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
 import { Heart, Menu, Moon, ShoppingBasketIcon, Sun } from "lucide-react";
 import Image from "next/image";

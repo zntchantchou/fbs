@@ -1,5 +1,5 @@
 "use client";
-import { AuthenticationService } from "@/auth/auth-service";
+import { AuthenticationService } from "@/services/auth-service";
 import { Product, useGetProductsQuery } from "@/state/api";
 import Header from "../(components)/Header";
 import Image from "next/image";
@@ -31,8 +31,11 @@ function Shop() {
   const wishListProductIds = useAppSelector(productIdsInWishlistSelector);
   const isInWishList = (productId: string) =>
     wishListProductIds.includes(productId);
+
+  const formatImageUrl = (url: string) =>
+    url.startsWith("/") ? "/pictures" + url : url;
   const productsCards = products
-    ? [...products, ...products, ...products].map((p, i) => {
+    ? products.map((p, i) => {
         return (
           <div key={i} className="flex flex-wrap justify-center mx-2">
             <div className="flex flex-col h-[23rem] relative">
@@ -53,7 +56,7 @@ function Shop() {
                   onClick={() => {
                     router.push("/shop/product/" + p.id);
                   }}
-                  src={p.pictures[0].url}
+                  src={formatImageUrl(p.pictures[0].url)}
                   alt={p.name}
                   height={200}
                   width={300}

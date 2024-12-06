@@ -1,5 +1,1 @@
-[
-  { "id": "df8a03fa-c69c-4ffe-9e28-5febfb7a5ca9", "name": "4 strings" },
-  { "id": "8d008094-bbb7-4b6f-a38c-0e2a9905322d", "name": "5 strings" },
-  { "id": "4fca2797-3e88-40c5-88d3-fd4df8744958", "name": "6 strings" }
-]
+[{ "name": "4 strings" }, { "name": "5 strings" }, { "name": "6 strings" }]
